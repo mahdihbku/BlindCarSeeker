@@ -7,4 +7,5 @@ import ec_elgamal
 ec_elgamal.test()
 quit()
 
+mahdi@mahdi-Precision-Tower-7910:/media/mahdi/OS/blind_car_seeker$ ./server.py --cars_folder cars/ --verbose --CPUs 1
 
