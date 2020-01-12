@@ -16,33 +16,28 @@ from multiprocessing import Pool
 from random import randint
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--img_dim',		type=int, help="Default image dimension.",						default=96				)
-parser.add_argument('--server_port',	type=int, help="Port of the server.",							default=6546			)
-parser.add_argument('--server_ip',		type=str, help="IP of the server.",								default='127.0.0.1'		)
-parser.add_argument('--cpus',			type=int, help="Number of parallel CPUs to be used.",			default=4				)
-parser.add_argument('--sensitivity',	type=int, help="Non-matching characters in the plate (0,1,2).",	default=2				)
-parser.add_argument('--generate_keys',	action='store_true', help="Generate new server keys."									)
-parser.add_argument('--verbose',		action='store_true', help="Output more details."										)
-parser.add_argument('--capture_device',	type=int, default=0, help='Capture device. 0 for latop webcam and 1 for usb webcam'		)
-parser.add_argument('--load', 			action='store_true'																		)
+parser.add_argument('--img_dim',		type=int,	default=96,		help="Default image dimension."									)
+parser.add_argument('--server_port',	type=int,	default=6546,	help="Port of the server.",										)
+parser.add_argument('--server_ip',		type=str,	default='127.0.0.1', help="IP of the server.",									)
+parser.add_argument('--cpus',			type=int,	default=4,		help="Number of parallel CPUs to be used.",						)
+parser.add_argument('--sensitivity',	type=int,	default=2,		help="Non-matching characters in the plate (0,1,2).",			)
+parser.add_argument('--capture_device',	type=int,	default=0,		help='Capture device. 0 for latop webcam and 1 for usb webcam'	)
+parser.add_argument('--PiCamera',		action='store_true',		help='Execute client.py from Raspberry Pi.'						)
+parser.add_argument('--generate_keys',	action='store_true',		help="Generate new server keys."								)
+parser.add_argument('--verbose',		action='store_true',		help="Output more details."										)
+parser.add_argument('--load', 			action='store_true',		help="Load from stored encrypted DB."							)
 args = parser.parse_args()
 
-server_ip 		= args.serverIP
-server_port		= args.serverPort
-nbr_of_cpus		= args.cpus
-verbose			= args.verbose
+elgamal_ct_size = 130
 DB_file 		= "rec_DB.data"
 pub_key_file 	= "rec_pub.txt"
-elgamal_ct_size = 130
-load 			= args.load
-sensitivity 	= args.sensitivity
 rand_nbrs_file	= "rand_num.data"
 rand_nbrs_min_bitlen = 128
 rand_nbrs_max_bitlen = 128
 
 # Temporary global variables
-DB = []
-G = []
+# DB = []
+# G = []
 
 def connect_to_server():
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

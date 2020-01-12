@@ -10,24 +10,18 @@ import os
 from multiprocessing import Pool
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--cars_file',		type=str, help="Path to file containing list of cars' plates.",	default=""	)
-parser.add_argument('--cars_folder',	type=str, help="Path to folder containing pictures of cars.",	default=""			)
-parser.add_argument('--img_dim',		type=int, help="Default image dimension.",						default=96				)
-parser.add_argument('--server_port',	type=int, help="Port of the server.",							default=6546			)
-parser.add_argument('--server_ip',		type=str, help="IP of the server.",								default='127.0.0.1'		)
-parser.add_argument('--cpus',			type=int, help="Number of parallel CPUs to be used.",			default=16				)
-# parser.add_argument('--sensitivity',	type=int, help="Non-matching characters in the plate (0,1,2).",	default=2				)
-parser.add_argument('--generate_keys',	action='store_true', help="Generate new server keys."									)
-parser.add_argument('--verbose',		action='store_true', help="Output more details."										)
+parser.add_argument('--cars_file',		type=str,	default="",		help="Path to file containing list of cars' plates."	)
+parser.add_argument('--cars_folder',	type=str,	default="",		help="Path to folder containing pictures of cars."		)
+parser.add_argument('--img_dim',		type=int,	default=96,		help="Default image dimension."							)
+parser.add_argument('--server_port',	type=int,	default=6546,	help="Port of the server."								)
+parser.add_argument('--server_ip',		type=str,	default='127.0.0.1',	help="IP of the server."						)
+parser.add_argument('--cpus',			type=int,	default=16,		help="Number of parallel CPUs to be used."				)
+# parser.add_argument('--sensitivity',	type=int,	default=2,		help="Non-matching characters in the plate (0,1,2)."	)
+parser.add_argument('--generate_keys',	action='store_true', 		help="Generate new server keys."						)
+parser.add_argument('--verbose',		action='store_true', 		help="Output more details."								)
+parser.add_argument('--load', 			action='store_true', 		help="Load from stored encrypted DB."					)
 args = parser.parse_args()
 
-server_ip 		= args.server_ip
-server_port		= args.server_port
-nbr_of_cpus		= args.cpus
-verbose			= args.verbose
-cars_file		= args.cars_file
-cars_folder		= args.cars_folder
-# sensitivity 	= args.sensitivity
 pub_key_file	= "ec_pub.txt"
 priv_key_file	= "ec_priv.txt"
 plate_size		= 8					# max number of chars in the plate
@@ -35,17 +29,15 @@ DB_file 		= 'DB.data'
 
 def send_pub_key(connection):
 	f = open(pub_key_file, 'r')
-	pub_key = f.read()
-	send_msg(connection, pub_key)
-	if verbose:	print("sendPubKey: Public key sent")
+	send_msg(connection, f.read())
 	f.close()
+	if verbose:	print("sendPubKey: Public key sent")
 
 def send_enc_DB(connection):
 	f = open(str(DB_file+".npy"), "rb")
-	DB = f.read()
-	send_msg(connection, DB)
-	if verbose:	print("sendDBfiles: Encrypted DB sent")
+	send_msg(connection, f.read())
 	f.close()
+	if verbose:	print("sendDBfiles: Encrypted DB sent")
 
 def wait_for_clients():
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -61,12 +53,9 @@ def wait_for_clients():
 				data = recvall(connection, 11)
 				print("waitForClients: Received: {}".format(data))
 				if data:
-					if (data == "GET pub_key"):
-						send_pub_key(connection)
-					if (data == "GET DBfiles"):
-						send_enc_DB(connection)
-					if (data == "new_scores "):
-						get_scores(connection)
+					if (data == "GET pub_key"):	send_pub_key(connection)
+					if (data == "GET DBfiles"):	send_enc_DB(connection)
+					if (data == "new_scores "):	get_scores(connection)
 				else:
 					print("waitForClients: No more data from client {}".format(client_address))
 					break
@@ -110,9 +99,9 @@ def get_scores(connection):
 	# except:
 	# 	print 'getScores: Error'
 
-def encode_plate_number(detected_plate):
+def encode_plate_number(plate_nbr):
 	encoded_plate = []
-	for char in detected_plate:
+	for char in plate_nbr:
 		if char not in ['\n', '\t']:
 			encoded_plate.append(str(ord(char)-26))	# max ascii code 126
 	for i in range(len(encoded_plate), plate_size):
@@ -133,12 +122,14 @@ def generate_DB_files():
 	elif (cars_file != "") :
 		if not os.path.isfile(cars_file):
 			print("generate_DB_files: ERROR! File {} does not exist!".format(cars_file))
-			exit(0)
 		with open(cars_file) as fp:
 			for line in fp:
 				plates.append(line)
 	else :
 		print("generate_DB_files: ERROR! No source file/directory specified")
+		exit(0)
+	if plates == []:
+		print("generate_DB_files: No plates have been detected. Exiting...")
 		exit(0)
 	encoded_plates = [encode_plate_number(plate) for plate in plates]
 	end_recognition = time.time()
@@ -155,6 +146,7 @@ def generate_DB_files():
 	end_enc = time.time()
 	if verbose:	print("generate_DB_files: Encrypted DB generated in: {} ms".format((end_enc-start_enc)*1000))
 	np.save(DB_file, DB)
+	del DB
 
 	# results_file = open("server_results.txt", "a+")
 	# results_file.write("Offline:M= {} CPUs_srvr= {} ident+norm= {} BCgen= {} storage(B+C+keys)= {} off_comm= {} onl_comm= {}\n".format(len(encoded_plates), nbr_of_cpus, end_recognition-start_recognition, end_enc-start_enc, 2*len(encoded_plates)*128*512*1.00/1024/1024, 2*len(encoded_plates)*128*512*1.00/1024/1024, len(encoded_plates)*512*1.00/1024))
@@ -181,7 +173,7 @@ def recv_msg(sock):
 	msglen = struct.unpack('>I', raw_msglen)[0]
 	return recvall(sock, msglen)
 
-def recvall(sock, n):
+def recv_all(sock, n):
 	data = b''
 	while len(data) < n:
 		packet = sock.recv(n - len(data))
@@ -193,5 +185,6 @@ def recvall(sock, n):
 if __name__ == '__main__':
 	if args.generate_keys :
 		ec_elgamal.generate_keys(pub_key_file, priv_key_file)
-	generate_DB_files()
+	if args.generate_keys or not args.load:
+		generate_DB_files()
 	wait_for_clients()
