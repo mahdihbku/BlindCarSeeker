@@ -31,17 +31,17 @@ def send_pub_key(connection):
 	f = open(pub_key_file, 'r')
 	send_msg(connection, f.read())
 	f.close()
-	if verbose:	print("sendPubKey: Public key sent")
+	if args.verbose:	print("sendPubKey: Public key sent")
 
 def send_enc_DB(connection):
 	f = open(str(DB_file+".npy"), "rb")
 	send_msg(connection, f.read())
 	f.close()
-	if verbose:	print("sendDBfiles: Encrypted DB sent")
+	if args.verbose:	print("sendDBfiles: Encrypted DB sent")
 
 def wait_for_clients():
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	server_address = (server_ip, server_port)
+	server_address = (args.server_ip, args.server_port)
 	sock.bind(server_address)
 	sock.listen(10)
 	while True:
@@ -73,8 +73,8 @@ def get_scores(connection):
 	# 	start_dec = time.time()
 	# 	D = [ec_elgamal.dec_zero_nonzero(encrypted_score) for encrypted_score in enc_D]	#if decrypted_score == 0 return 0, else return 1
 	# 	end_dec = time.time()
-	# 	if verbose:	print("getScores: dec_time for {} suspects: {} ms.".format(len(D), (end_dec-start_dec)*1000))
-	# 	if verbose:	print(D)
+	# 	if args.verbose:	print("getScores: dec_time for {} suspects: {} ms.".format(len(D), (end_dec-start_dec)*1000))
+	# 	if args.verbose:	print(D)
 
 	# 	results_file = open("final_results.txt", "a+")
 	# 	results_file.write("Online:dec_time= {}\n".format((end_dec-start_dec)*1000))
@@ -102,7 +102,7 @@ def get_scores(connection):
 def encode_plate_number(plate_nbr):
 	encoded_plate = []
 	for char in plate_nbr:
-		if char not in ['\n', '\t']:
+		if char not in ['\n','\t','']:
 			encoded_plate.append(str(ord(char)-26))	# max ascii code 126
 	for i in range(len(encoded_plate), plate_size):
 		encoded_plate.append('99')
@@ -112,17 +112,17 @@ def generate_DB_files():
 	start_recognition = time.time()
 	ec_elgamal.prepare(pub_key_file, priv_key_file)
 	plates = []
-	if (cars_folder != ""):
+	if (args.cars_folder != ""):
 		alpr = Alpr("us", "/etc/openalpr/openalpr.conf", "/usr/share/openalpr/runtime_data")
-		for root, dirs, files in os.walk(cars_folder):
+		for root, dirs, files in os.walk(args.cars_folder):
 			for img in files:
 				results = alpr.recognize_file(os.path.join(root, img))
 				if results.values()[5] != []:
 					plates.append(results.values()[5][0].values()[0])			# get the result with the best confidence
-	elif (cars_file != "") :
-		if not os.path.isfile(cars_file):
-			print("generate_DB_files: ERROR! File {} does not exist!".format(cars_file))
-		with open(cars_file) as fp:
+	elif (args.cars_file != "") :
+		if not os.path.isfile(args.cars_file):
+			print("generate_DB_files: ERROR! File {} does not exist!".format(args.cars_file))
+		with open(args.cars_file) as fp:
 			for line in fp:
 				plates.append(line)
 	else :
@@ -133,26 +133,26 @@ def generate_DB_files():
 		exit(0)
 	encoded_plates = [encode_plate_number(plate) for plate in plates]
 	end_recognition = time.time()
-	if verbose:	print("generate_DB_files: Plates generated in {} ms".format((end_recognition-start_recognition)*1000))
+	if args.verbose:	print("generate_DB_files: Plates generated in {} ms".format((end_recognition-start_recognition)*1000))
 	# print("generate_DB_files: plates:")
 	# print plates
 	print("generate_DB_files: encoded_plates:")
 	print encoded_plates
 	start_enc = time.time()
-	if verbose:	print("generate_DB_files: Generating encrypted DB...")
-	pool = Pool(processes=nbr_of_cpus)
-	DB = pool.map(encrypt_for_DB, (encoded_plates[int(i*len(encoded_plates)/nbr_of_cpus):int((i+1)*len(encoded_plates)/nbr_of_cpus)] for i in range(nbr_of_cpus)))
+	if args.verbose:	print("generate_DB_files: Generating encrypted DB...")
+	pool = Pool(processes=args.cpus)
+	DB = pool.map(encrypt_for_DB, (encoded_plates[int(i*len(encoded_plates)/args.cpus):int((i+1)*len(encoded_plates)/args.cpus)] for i in range(args.cpus)))
 	DB = [ent for sublist in DB for ent in sublist]
 	end_enc = time.time()
-	if verbose:	print("generate_DB_files: Encrypted DB generated in: {} ms".format((end_enc-start_enc)*1000))
+	if args.verbose:	print("generate_DB_files: Encrypted DB generated in: {} ms".format((end_enc-start_enc)*1000))
 	np.save(DB_file, DB)
 	del DB
-
 	# results_file = open("server_results.txt", "a+")
 	# results_file.write("Offline:M= {} CPUs_srvr= {} ident+norm= {} BCgen= {} storage(B+C+keys)= {} off_comm= {} onl_comm= {}\n".format(len(encoded_plates), nbr_of_cpus, end_recognition-start_recognition, end_enc-start_enc, 2*len(encoded_plates)*128*512*1.00/1024/1024, 2*len(encoded_plates)*128*512*1.00/1024/1024, len(encoded_plates)*512*1.00/1024))
 	# results_file.close()
 
 def encrypt_for_DB(list):
+	# list = [[p11p12p13..p18],[p21p22p23..p28],..,[pN1pN2pN3..pN8]]
 	enc_plates = []
 	for plate in list:
 		enc_plate = []
@@ -161,6 +161,7 @@ def encrypt_for_DB(list):
 			# print("encrypt_for_DB: encrypting: {}".format(str(int(plate[i:i+2])*10**i)))
 		enc_plates.append(enc_plate)
 	return enc_plates
+	# enc_plates = [Enc(p11),Enc(p12),..,Enc(p18),Enc(p21),Enc(p22),..,Enc(p28),Enc(pN1),Enc(pN2),..,Enc(pN8)]
 
 def send_msg(sock, msg):
 	msg = struct.pack('>I', len(msg)) + msg
