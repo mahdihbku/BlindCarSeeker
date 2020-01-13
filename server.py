@@ -108,7 +108,7 @@ def encode_plate_number(plate_nbr):
 		encoded_plate.append('99')
 	return "".join(encoded_plate)
 
-def generate_DB_files():
+def generate_DB_files():	#TODO checking
 	start_recognition = time.time()
 	ec_elgamal.prepare(pub_key_file, priv_key_file)
 	plates = []

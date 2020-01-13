@@ -116,7 +116,7 @@ def recvall(sock, n):
 		data += packet
 	return data
 
-def encrypt_for_G(list):
+def encrypt_for_G(list):	#TODO checking
 	return [[ec_elgamal.encrypt_ec("-"+str(g*10**(k*2))) for k in range (8)] for g in list]
 
 def generate_local_files():
