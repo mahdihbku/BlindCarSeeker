@@ -116,7 +116,7 @@ def recvall(sock, n):
 		data += packet
 	return data
 
-def encrypt_for_G(list):	#TODO checking
+def encrypt_for_G(list):
 	return [[ec_elgamal.encrypt_ec("-"+str(g*10**(k*2))) for k in range (8)] for g in list]
 
 def generate_local_files():
@@ -155,11 +155,10 @@ def sendScores(connection, scores):
 	except:
 		print ("sendScores: Error")
 
-def frame_processor(frame):
-	global DB
-	global G
+def frame_processor(frame):	# TODO check if add8 is better than 8xadd2 !!!
 	encrypted_scores = []
-	server_plates_nbr = len(DB)/8
+	server_plates_nbr = len(DB)
+	print("frame_processor: server_plates_nbr={}".format(server_plates_nbr)) #TODO to delete
 	alpr = Alpr("us", "/etc/openalpr/openalpr.conf", "/usr/share/openalpr/runtime_data")
 	results = alpr.recognize(frame)
 	plate = results.values()[5][0].values()[0] if results.values()[5] != [] else []
@@ -167,22 +166,45 @@ def frame_processor(frame):
 		if args.verbose:	print("frame_processor: No plate number in frame")
 		return 0
 	encoded_plate = encode_plate_number(plate)
-	# supposing G was generated as G[8][99]	TODO double check!!
-	# for sensitivity == 0
-	enc_plate = G[0][int(encoded_plate[0:2])]	#enc_plate=Enc(q1q2..q8)
+
+	# when sensitivity is 0
+	enc_plate = G[int(encoded_plate[0:2])][0]	#enc_plate=Enc(q1q2..q8)
 	for i in range(1, 8):
-		enc_plate = ec_elgamal.add2(enc_d, G[i][int(encoded_plate[i*2:i*2+2])])
-	DB_parser = 0
+		enc_plate = ec_elgamal.add2(enc_d, G[int(encoded_plate[i*2:i*2+2])][i])
 	for server_plate in range(server_plates_nbr):
 		encrypted_score = enc_plate
-		for i in range (8):
-			encrypted_score = ec_elgamal.add2(encrypted_score, DB[DB_parser])
-			DB_parser++
+		for i in range(8):
+			encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
 		encrypted_scores.append(encrypted_score)
-	if args.sensitivity >= 1:
+	if args.sensitivity >= 1:	# TODO these two if statements could be merged
 		for excluded_position in range(8):
-			
-
+			starting_position = 0 if excluded_position != 0 else 1
+			enc_plate = G[int(encoded_plate[starting_position*2:starting_position*2+2])][starting_position]
+			for i in [x for x in range(1, 8) if x != excluded_position]:
+				enc_plate = ec_elgamal.add2(enc_d, G[int(encoded_plate[i*2:i*2+2])][i])
+			for server_plate in range(server_plates_nbr):
+				encrypted_score = enc_plate
+				for i in [x for x in range(8) if x != excluded_position]:
+					encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
+				encrypted_scores.append(encrypted_score)
+	elif args.sensitivity >= 2:
+		excluded_positions_range = [(f,s) for f in range(8) for s in range(f, 8) if f != s]
+		for excluded_2_positions in excluded_positions_range:
+			starting_position = 0 if 0 not in excluded_2_positions else 1 if 1 not in excluded_2_positions else 2
+			enc_plate = G[int(encoded_plate[starting_position*2:starting_position*2+2])][starting_position]
+			for i in [x for x in range(1, 8) if x not in excluded_2_positions]:
+				enc_plate = ec_elgamal.add2(enc_d, G[int(encoded_plate[i*2:i*2+2])][i])
+			for server_plate in range(server_plates_nbr):
+				encrypted_score = enc_plate
+				for i in [x for x in range(8) if x not in excluded_2_positions]:
+					encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
+				encrypted_scores.append(encrypted_score)
+	else:
+		print("frame_processor: Computing scores is not allowed for sensitivity greater than 2. Sending for 2 only!")
+	D = pickle.dumps(encrypted_scores)
+	sendScores(sock, enc_D)
+	print("camThread: The encrypted scores have been sent to the server")
+	
 
 if __name__ == '__main__':
 	sock = connectToServer()

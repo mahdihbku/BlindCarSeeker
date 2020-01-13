@@ -64,40 +64,26 @@ def wait_for_clients():
 			print("waitForClients: Connection closed with client {}".format(client_address))
 
 def get_scores(connection):
-	cccc=0
-	# try:
-	# 	ec_elgamal.prepare(pub_key_file, priv_key_file)
-	# 	data = recv_msg(connection)
-	# 	enc_D = pickle.loads(data)
+	try:
+		ec_elgamal.prepare(pub_key_file, priv_key_file)
+		data = recv_msg(connection)
+		enc_D = pickle.loads(data)
 
-	# 	start_dec = time.time()
+		start_dec = time.time()
+		# return 0 if dec(encD[i])==0 else 1
 	# 	D = [ec_elgamal.dec_zero_nonzero(encrypted_score) for encrypted_score in enc_D]	#if decrypted_score == 0 return 0, else return 1
-	# 	end_dec = time.time()
-	# 	if args.verbose:	print("getScores: dec_time for {} suspects: {} ms.".format(len(D), (end_dec-start_dec)*1000))
-	# 	if args.verbose:	print(D)
+		end_dec = time.time()
+		if args.verbose:	print("getScores: dec_time for {} suspects: {} ms.".format(len(D), (end_dec-start_dec)*1000))
+		if args.verbose:	print(D)
 
-	# 	results_file = open("final_results.txt", "a+")
-	# 	results_file.write("Online:dec_time= {}\n".format((end_dec-start_dec)*1000))
-	# 	results_file.close()
-	# 	## stopped here......................................
-	# 	# i=0
-	# 	# while (i<len(D) and len(D[i])<200):		# TODO: uncomment !!
-	# 	# 	i+=1									# TODO: uncomment !!
-	# 	if (0 in D):	# SUSPECT DETECTED!!!
-	# 		print("getScores: SUSPECT DETECTED! id={} name={}".format(i, suspects_names[i]))
-	# 		message = "GET image  "
-	# 		connection.sendall(message)
-	# 		data = recv_msg(connection)
-	# 		now = datetime.datetime.now()
-	# 		image_name = "suspect"+str(now.strftime("%Y-%m-%d-%H-%M")+".png")
-	# 		frame = pickle.loads(data)
-	# 		cv2.imwrite(image_name, frame)
-	# 		print("getScores: Suspect's image saved in {}".format(image_name))
-	# 	else:
-	# 		message = "No match"
-	# 		connection.sendall(message)
-	# except:
-	# 	print 'getScores: Error'
+		results_file = open("final_results.txt", "a+")
+		results_file.write("Online:dec_time= {}\n".format((end_dec-start_dec)*1000))
+		results_file.close()
+		if (0 in D):	# SUSPECT DETECTED!!!
+			print("getScores: Plate number detected!")
+			# print("getScores: SUSPECT DETECTED! id={} name={}".format(i, suspects_names[i]))
+	except:
+		print 'getScores: Error'
 
 def encode_plate_number(plate_nbr):
 	encoded_plate = []
@@ -156,7 +142,7 @@ def encrypt_for_DB(list):
 	enc_plates = []
 	for plate in list:
 		enc_plate = []
-		for i in range(0, len(plate)-1, 2):
+		for i in range(0, plate_size*2, 2):
 			enc_plate.append(ec_elgamal.encrypt_ec(str(int(plate[i:i+2])*10**i)))
 			# print("encrypt_for_DB: encrypting: {}".format(str(int(plate[i:i+2])*10**i)))
 		enc_plates.append(enc_plate)
