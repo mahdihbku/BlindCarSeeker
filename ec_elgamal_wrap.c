@@ -3081,6 +3081,7 @@ extern void add2(char *result, char *ct1, char *ct2);
 extern void add3(char *result, char *ct1, char *ct2, char *ct3);
 extern void add4(char *result, char *ct1, char *ct2, char *ct3, char *ct4);
 extern void mult(char *result, char *scalar, char *ct1);
+extern void test();
 
 
 
@@ -3369,6 +3370,18 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_test(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  
+  if (!SWIG_Python_UnpackTuple(args, "test", 0, 0, 0)) SWIG_fail;
+  test();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_decrypt_ec(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   char *arg1 = (char *) 0 ;
@@ -3629,6 +3642,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "score_is_positive", _wrap_score_is_positive, METH_O, NULL},
 	 { "dec_zero_nonzero", _wrap_dec_zero_nonzero, METH_O, NULL},
 	 { "generate_keys", _wrap_generate_keys, METH_VARARGS, NULL},
+	 { "test", _wrap_test, METH_NOARGS, NULL},
 	 { "decrypt_ec", _wrap_decrypt_ec, METH_O, NULL},
 	 { "encrypt_ec", _wrap_encrypt_ec, METH_O, NULL},
 	 { "add2", _wrap_add2, METH_VARARGS, NULL},

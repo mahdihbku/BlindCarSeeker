@@ -121,6 +121,9 @@ def dec_zero_nonzero(ciphert):
 def generate_keys(pub_filename, priv_filename):
     return _ec_elgamal.generate_keys(pub_filename, priv_filename)
 
+def test():
+    return _ec_elgamal.test()
+
 def decrypt_ec(ciphert):
     return _ec_elgamal.decrypt_ec(ciphert)
 

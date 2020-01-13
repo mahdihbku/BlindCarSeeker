@@ -7,6 +7,7 @@ import numpy as np
 import socket
 import ec_elgamal
 import os
+import struct
 from multiprocessing import Pool
 
 parser = argparse.ArgumentParser()
@@ -50,7 +51,7 @@ def wait_for_clients():
 		connection, client_address = sock.accept()
 		try:
 			while True:
-				data = recvall(connection, 11)
+				data = recv_all(connection, 11)
 				print("waitForClients: Received: {}".format(data))
 				if data:
 					if (data == "GET pub_key"):	send_pub_key(connection)
@@ -63,6 +64,9 @@ def wait_for_clients():
 			connection.close()
 			print("waitForClients: Connection closed with client {}".format(client_address))
 
+def decrypt_scores(list):
+	return [ec_elgamal.dec_zero_nonzero(encrypted_score) for encrypted_score in list]
+
 def get_scores(connection):
 	try:
 		ec_elgamal.prepare(pub_key_file, priv_key_file)
@@ -70,15 +74,17 @@ def get_scores(connection):
 		enc_D = pickle.loads(data)
 
 		start_dec = time.time()
-		# return 0 if dec(encD[i])==0 else 1
-	# 	D = [ec_elgamal.dec_zero_nonzero(encrypted_score) for encrypted_score in enc_D]	#if decrypted_score == 0 return 0, else return 1
+		pool = Pool(processes=args.cpus)
+		D = pool.map(decrypt_scores, (enc_D[int(i*len(enc_D)/args.cpus):int((i+1)*len(enc_D)/args.cpus)] for i in range(args.cpus)))
+		D = [ent for sublist in D for ent in sublist]
+		# D = [ec_elgamal.dec_zero_nonzero(encrypted_score) for encrypted_score in enc_D]	#if decrypted_score == 0 return 0, else return 1
 		end_dec = time.time()
-		if args.verbose:	print("getScores: dec_time for {} suspects: {} ms.".format(len(D), (end_dec-start_dec)*1000))
-		if args.verbose:	print(D)
+		if args.verbose:	print("getScores: dec_time of {} ciphertexts: {} ms.".format(len(D), (end_dec-start_dec)*1000))
+		# if args.verbose:	print(D)
 
-		results_file = open("final_results.txt", "a+")
-		results_file.write("Online:dec_time= {}\n".format((end_dec-start_dec)*1000))
-		results_file.close()
+		# results_file = open("final_results.txt", "a+")
+		# results_file.write("Online:dec_time= {}\n".format((end_dec-start_dec)*1000))
+		# results_file.close()
 		if (0 in D):	# SUSPECT DETECTED!!!
 			print("getScores: Plate number detected!")
 			# print("getScores: SUSPECT DETECTED! id={} name={}".format(i, suspects_names[i]))
@@ -104,7 +110,7 @@ def generate_DB_files():	#TODO checking
 			for img in files:
 				results = alpr.recognize_file(os.path.join(root, img))
 				if results.values()[5] != []:
-					plates.append(results.values()[5][0].values()[0])			# get the result with the best confidence
+					plates.append(results.values()[5][0].values()[0]) # get the result with the best confidence
 	elif (args.cars_file != "") :
 		if not os.path.isfile(args.cars_file):
 			print("generate_DB_files: ERROR! File {} does not exist!".format(args.cars_file))
@@ -122,8 +128,8 @@ def generate_DB_files():	#TODO checking
 	if args.verbose:	print("generate_DB_files: Plates generated in {} ms".format((end_recognition-start_recognition)*1000))
 	# print("generate_DB_files: plates:")
 	# print plates
-	print("generate_DB_files: encoded_plates:")
-	print encoded_plates
+	# print("generate_DB_files: encoded_plates:")
+	# print encoded_plates
 	start_enc = time.time()
 	if args.verbose:	print("generate_DB_files: Generating encrypted DB...")
 	pool = Pool(processes=args.cpus)
@@ -144,7 +150,6 @@ def encrypt_for_DB(list):
 		enc_plate = []
 		for i in range(0, plate_size*2, 2):
 			enc_plate.append(ec_elgamal.encrypt_ec(str(int(plate[i:i+2])*10**i)))
-			# print("encrypt_for_DB: encrypting: {}".format(str(int(plate[i:i+2])*10**i)))
 		enc_plates.append(enc_plate)
 	return enc_plates
 	# enc_plates = [Enc(p11),Enc(p12),..,Enc(p18),Enc(p21),Enc(p22),..,Enc(p28),Enc(pN1),Enc(pN2),..,Enc(pN8)]
@@ -154,11 +159,11 @@ def send_msg(sock, msg):
 	sock.sendall(msg)
 
 def recv_msg(sock):
-	raw_msglen = recvall(sock, 4)
+	raw_msglen = recv_all(sock, 4)
 	if not raw_msglen:
 		return None
 	msglen = struct.unpack('>I', raw_msglen)[0]
-	return recvall(sock, msglen)
+	return recv_all(sock, msglen)
 
 def recv_all(sock, n):
 	data = b''

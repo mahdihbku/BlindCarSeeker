@@ -26,6 +26,7 @@ extern void generate_decrypt_file();
 extern void load_encryption_file();
 extern void generate_keys(char *pub_filename, char *priv_filename);
 extern int score_is_positive(char *ciphert);
+extern int dec_zero_nonzero(char *ciphert);
 extern void decrypt_ec(char *message, char *ciphert);
 extern void encrypt_ec(char *cipherText, char *mess);
 extern void decrypt_ec_time_only(char *message, char *ciphert);
@@ -45,6 +46,7 @@ extern double print_time(struct timeval *start, struct timeval *end);
 extern void generate_decrypt_file();
 extern void load_encryption_file();
 extern int score_is_positive(char *ciphert);
+extern int dec_zero_nonzero(char *ciphert);
 extern void generate_keys(char *pub_filename, char *priv_filename);
 extern void test();
 

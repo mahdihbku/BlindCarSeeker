@@ -24,45 +24,62 @@ double print_time(struct timeval *start, struct timeval *end) {
   return usec/1000.0;
 }
 
-static int bn2binpad(const BIGNUM *a, unsigned char *to, int tolen) {
-    int n;
-    size_t i, lasti, j, atop, mask;
-    BN_ULONG l;
+// static int bn2binpad(const BIGNUM *a, unsigned char *to, int tolen) {
+//     int n;
+//     size_t i, lasti, j, atop, mask;
+//     BN_ULONG l;
 
-    /*
-     * In case |a| is fixed-top, BN_num_bytes can return bogus length,
-     * but it's assumed that fixed-top inputs ought to be "nominated"
-     * even for padded output, so it works out...
-     */
-    n = BN_num_bytes(a);
-    if (tolen == -1) {
-        tolen = n;
-    } else if (tolen < n) {     /* uncommon/unlike case */
-        BIGNUM temp = *a;
+//     /*
+//      * In case |a| is fixed-top, BN_num_bytes can return bogus length,
+//      * but it's assumed that fixed-top inputs ought to be "nominated"
+//      * even for padded output, so it works out...
+//      */
+//     n = BN_num_bytes(a);
+//     if (tolen == -1) {
+//         tolen = n;
+//     } else if (tolen < n) {     /* uncommon/unlike case */
+//         BIGNUM temp = *a;
 
-        bn_correct_top(&temp);
-        n = BN_num_bytes(&temp);
-        if (tolen < n)
-            return -1;
-    }
+//         bn_correct_top(&temp);
+//         n = BN_num_bytes(&temp);
+//         if (tolen < n)
+//             return -1;
+//     }
 
-    /* Swipe through whole available data and don't give away padded zero. */
-    atop = a->dmax * BN_BYTES;
-    if (atop == 0) {
-        OPENSSL_cleanse(to, tolen);
-        return tolen;
-    }
+//     /* Swipe through whole available data and don't give away padded zero. */
+//     atop = a->dmax * BN_BYTES;
+//     if (atop == 0) {
+//         OPENSSL_cleanse(to, tolen);
+//         return tolen;
+//     }
 
-    lasti = atop - 1;
-    atop = a->top * BN_BYTES;
-    for (i = 0, j = 0, to += tolen; j < (size_t)tolen; j++) {
-        l = a->d[i / BN_BYTES];
-        mask = 0 - ((j - atop) >> (8 * sizeof(i) - 1));
-        *--to = (unsigned char)(l >> (8 * (i % BN_BYTES)) & mask);
-        i += (i - lasti) >> (8 * sizeof(i) - 1); /* stay on last limb */
-    }
+//     lasti = atop - 1;
+//     atop = a->top * BN_BYTES;
+//     for (i = 0, j = 0, to += tolen; j < (size_t)tolen; j++) {
+//         l = a->d[i / BN_BYTES];
+//         mask = 0 - ((j - atop) >> (8 * sizeof(i) - 1));
+//         *--to = (unsigned char)(l >> (8 * (i % BN_BYTES)) & mask);
+//         i += (i - lasti) >> (8 * sizeof(i) - 1); /* stay on last limb */
+//     }
 
-    return tolen;
+//     return tolen;
+// }
+
+int dec_zero_nonzero(char *ciphert) {
+	EC_POINT *c1, *c2, *h1;
+	BIGNUM *m;
+	c1 = EC_POINT_new(curve);
+	c2 = EC_POINT_new(curve);
+	h1 = EC_POINT_new(curve);
+	m = BN_new();
+	EC_POINT_oct2point(curve, c1, ciphert, POINT_UNCOMPRESSED_len, ctx);
+	EC_POINT_oct2point(curve, c2, ciphert+POINT_UNCOMPRESSED_len, POINT_UNCOMPRESSED_len, ctx);
+	EC_POINT_mul(curve, c1, NULL, c1, x, ctx);
+	EC_POINT_invert(curve, c1, ctx);
+	EC_POINT_add(curve, c1, c1, c2, ctx);
+	EC_POINT_set_to_infinity(curve, h1);
+	if (!EC_POINT_cmp(curve, h1, c1, ctx)) return 0;
+	else return 1;
 }
 
 int prepare(char *pub_filename, char *priv_filename) {
@@ -370,8 +387,8 @@ void generate_keys(char *pub_filename, char *priv_filename) {
   }
   size_t priv_len = BN_num_bytes(x);
   unsigned char *priv_buf = malloc(sizeof(char)*priv_len);
-  // BN_bn2binpad(x, priv_buf, priv_len);
-  bn2binpad(x, priv_buf, priv_len);
+  BN_bn2binpad(x, priv_buf, priv_len);
+  // bn2binpad(x, priv_buf, priv_len);
   FILE *pub_file_p = fopen(pub_filename, "wb");
   fwrite(pub_buf, pub_len, 1, pub_file_p);
   fclose(pub_file_p);
@@ -383,34 +400,39 @@ void generate_keys(char *pub_filename, char *priv_filename) {
 void test() {
   prepare("ec_pub.txt", "ec_priv.txt");
   // generate_decrypt_file();
-  load_encryption_file();
+  // load_encryption_file();
   char* ct1 = (char*) malloc (130 * sizeof(char));
   encrypt_ec(ct1, "1234");
   char pt1[20];
   decrypt_ec(pt1, ct1);
   printf("pt1=%s\n", pt1);
-  printf("score_is_positive(ct1)=%d\n", score_is_positive(ct1));
+  printf("dec_zero_nonzero(ct1)=%d\n", dec_zero_nonzero(ct1));
+  // printf("score_is_positive(ct1)=%d\n", score_is_positive(ct1));
 
   char* ct2 = (char*) malloc (130 * sizeof(char));
-  encrypt_ec(ct2, "-1234");
+  encrypt_ec(ct2, "28734");
   char pt2[20];
   decrypt_ec(pt2, ct2);
   printf("pt2=%s\n", pt2);
-  printf("score_is_positive(ct2)=%d\n", score_is_positive(ct2));
+  printf("dec_zero_nonzero(ct2)=%d\n", dec_zero_nonzero(ct2));
+  // printf("score_is_positive(ct2)=%d\n", score_is_positive(ct2));
 
-
-  encrypt_ec(ct1, "1284734");
+  encrypt_ec(ct1, "128734");
   decrypt_ec(pt1, ct1);
   printf("pt1=%s\n", pt1);
-  printf("score_is_positive(ct1)=%d\n", score_is_positive(ct1));
-
+  // printf("score_is_positive(ct1)=%d\n", score_is_positive(ct1));
 
   encrypt_ec(ct2, "-128734");
   decrypt_ec(pt2, ct2);
   printf("pt2=%s\n", pt2);
-  printf("score_is_positive(ct2)=%d\n", score_is_positive(ct2));
+  // printf("score_is_positive(ct2)=%d\n", score_is_positive(ct2));
+
+  add2(ct2, ct2, ct1);
+  decrypt_ec(pt2, ct2);
+  printf("pt2=%s\n", pt2);
+  printf("dec_zero_nonzero(ct2)=%d\n", dec_zero_nonzero(ct2));
+  // printf("score_is_positive(ct2)=%d\n", score_is_positive(ct2));
 }
 
 int main() {
-  
 }

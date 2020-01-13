@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 from openalpr import Alpr
-from picamera.array import PiRGBArray
-from picamera import PiCamera
 import cv2
 import time
 import argparse
@@ -12,6 +10,8 @@ import numpy as np
 import socket
 import ec_elgamal
 import os
+import struct
+import random
 from multiprocessing import Pool
 from random import randint
 
@@ -27,9 +27,6 @@ parser.add_argument('--server_port',	type=int,	default=6546,	help="Port of the s
 parser.add_argument('--server_ip',		type=str,	default='127.0.0.1', help="IP of the server.",									)
 parser.add_argument('--cpus',			type=int,	default=4,		help="Number of parallel CPUs to be used.",						)
 parser.add_argument('--sensitivity',	type=int,	default=2,		help="Non-matching characters in the plate (0,1,2).",			)
-parser.add_argument('--capture_device',	type=int,	default=0,		help='Capture device. 0 for latop webcam and 1 for usb webcam'	)
-parser.add_argument('--PiCamera',		action='store_true',		help='Execute client.py from Raspberry Pi.'						)
-parser.add_argument('--generate_keys',	action='store_true',		help="Generate new server keys."								)
 parser.add_argument('--verbose',		action='store_true',		help="Output more details."										)
 parser.add_argument('--load', 			action='store_true',		help="Load from stored encrypted DB."							)
 args = parser.parse_args()
@@ -37,6 +34,7 @@ args = parser.parse_args()
 plate_size		= 8					# max number of chars in the plate
 elgamal_ct_size = 130
 DB_file 		= "rec_DB.data"
+G_file			= "G.data"
 pub_key_file 	= "rec_pub.txt"
 rand_nbrs_file	= "rand_num.data"
 rand_nbrs_min_bitlen = 128
@@ -49,7 +47,7 @@ G = []
 def connect_to_server():
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	server_address = (args.server_ip, args.server_port)
-	if args.verbose:	print("connectToServer: Connecting to {}:{}...".format(server_ip, server_port))
+	if args.verbose:	print("connectToServer: Connecting to {}:{}...".format(args.server_ip, args.server_port))
 	sock.connect(server_address)
 	if args.verbose:	print("connectToServer: Connected")
 	return sock
@@ -101,13 +99,13 @@ def send_msg(sock, msg):
 	sock.sendall(msg)
 
 def recv_msg(sock):
-	raw_msglen = recvall(sock, 4)
+	raw_msglen = recv_all(sock, 4)
 	if not raw_msglen:
 		return None
 	msglen = struct.unpack('>I', raw_msglen)[0]
-	return recvall(sock, msglen)
+	return recv_all(sock, msglen)
 
-def recvall(sock, n):
+def recv_all(sock, n):
 	data = b''
 	while len(data) < n:
 		packet = sock.recv(n - len(data))
@@ -123,9 +121,9 @@ def generate_local_files():
 	start_gen_G = time.time()
 	ec_elgamal.prepare_for_enc(pub_key_file)
 	if args.verbose:	print("generate_local_files: Generating local G...")
-	pool = Pool(processes=nbr_of_CPUs)
+	pool = Pool(processes=args.cpus)
 	G_values = range(100)
-	G = pool.map(encrypt_for_G, (G_values[int(i*100/nbr_of_CPUs):int((i+1)*100/nbr_of_CPUs)] for i in range(nbr_of_CPUs)))
+	G = pool.map(encrypt_for_G, (G_values[int(i*100/args.cpus):int((i+1)*100/args.cpus)] for i in range(args.cpus)))
 	G = [ent for sublist in G for ent in sublist]
 	np.save(G_file, G)
 	del G
@@ -135,13 +133,13 @@ def generate_local_files():
 	# results_file = open("camera_results.txt","a+")
 	# storage = ec_elgamal_ct_size*(128*suspects_count*256/G_portion+128*suspects_count+256+suspects_count)+256*suspects_count if G_portion>0 else ec_elgamal_ct_size*(128*suspects_count+128*suspects_count+256+suspects_count)+256*suspects_count
 	# storage = storage*1.00/1024/1024
-	# results_file.write("Offile:M= {} CPUs_camera= {} F_G_gen= {} G_portion= {} storage((GorC)+B+F+rand)= {}\n".format(suspects_count,nbr_of_CPUs,end_gen_files-start_gen_files,G_portion,storage))
+	# results_file.write("Offile:M= {} CPUs_camera= {} F_G_gen= {} G_portion= {} storage((GorC)+B+F+rand)= {}\n".format(suspects_count,args.cpus,end_gen_files-start_gen_files,G_portion,storage))
 	# results_file.close()
 
 def encode_plate_number(detected_plate):
 	encoded_plate = []
 	for char in detected_plate:
-		if char not in ['\n', '\t']:
+		if char not in ['\n','\t',' ']:
 			encoded_plate.append(str(ord(char)-26))	# max ascii code 126
 	for i in range(len(encoded_plate), plate_size):
 		encoded_plate.append('99')
@@ -156,68 +154,86 @@ def sendScores(connection, scores):
 		print ("sendScores: Error")
 
 def frame_processor(frame):	# TODO check if add8 is better than 8xadd2 !!!
-	encrypted_scores = []
 	server_plates_nbr = len(DB)
 	print("frame_processor: server_plates_nbr={}".format(server_plates_nbr)) #TODO to delete
 	alpr = Alpr("us", "/etc/openalpr/openalpr.conf", "/usr/share/openalpr/runtime_data")
-	results = alpr.recognize(frame)
+	results = alpr.recognize_ndarray(frame)
 	plate = results.values()[5][0].values()[0] if results.values()[5] != [] else []
 	if plate == []:
 		if args.verbose:	print("frame_processor: No plate number in frame")
 		return 0
 	encoded_plate = encode_plate_number(plate)
+	print("frame_processor: plate={}".format(plate)) #TODO to delete
+	print("frame_processor: encoded_plate={}".format(encoded_plate)) #TODO to delete
 
-	# when sensitivity is 0
+	# start_enc = time.time()
+	# if args.verbose:	print("generate_DB_files: Generating encrypted DB...")
+	# pool = Pool(processes=args.cpus)
+	# DB = pool.map(encrypt_for_DB, (encoded_plates[int(i*len(encoded_plates)/args.cpus):int((i+1)*len(encoded_plates)/args.cpus)] for i in range(args.cpus)))
+	# DB = [ent for sublist in DB for ent in sublist]
+	# end_enc = time.time()
+	# if args.verbose:	print("generate_DB_files: Encrypted DB generated in: {} ms".format((end_enc-start_enc)*1000))
+
+	# when sensitivity is 0	# TODO almost done!!! optimize this part (parallelize)
+	start_enc = time.time()
+	encrypted_scores = []
 	enc_plate = G[int(encoded_plate[0:2])][0]	#enc_plate=Enc(q1q2..q8)
 	for i in range(1, 8):
-		enc_plate = ec_elgamal.add2(enc_d, G[int(encoded_plate[i*2:i*2+2])][i])
+		enc_plate = ec_elgamal.add2(enc_plate, G[int(encoded_plate[i*2:i*2+2])][i])
 	for server_plate in range(server_plates_nbr):
 		encrypted_score = enc_plate
 		for i in range(8):
 			encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
 		encrypted_scores.append(encrypted_score)
+
 	if args.sensitivity >= 1:	# TODO these two if statements could be merged
 		for excluded_position in range(8):
 			starting_position = 0 if excluded_position != 0 else 1
 			enc_plate = G[int(encoded_plate[starting_position*2:starting_position*2+2])][starting_position]
 			for i in [x for x in range(1, 8) if x != excluded_position]:
-				enc_plate = ec_elgamal.add2(enc_d, G[int(encoded_plate[i*2:i*2+2])][i])
+				enc_plate = ec_elgamal.add2(enc_plate, G[int(encoded_plate[i*2:i*2+2])][i])
 			for server_plate in range(server_plates_nbr):
 				encrypted_score = enc_plate
 				for i in [x for x in range(8) if x != excluded_position]:
 					encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
 				encrypted_scores.append(encrypted_score)
-	elif args.sensitivity >= 2:
+	
+	if args.sensitivity >= 2:
 		excluded_positions_range = [(f,s) for f in range(8) for s in range(f, 8) if f != s]
 		for excluded_2_positions in excluded_positions_range:
 			starting_position = 0 if 0 not in excluded_2_positions else 1 if 1 not in excluded_2_positions else 2
 			enc_plate = G[int(encoded_plate[starting_position*2:starting_position*2+2])][starting_position]
 			for i in [x for x in range(1, 8) if x not in excluded_2_positions]:
-				enc_plate = ec_elgamal.add2(enc_d, G[int(encoded_plate[i*2:i*2+2])][i])
+				enc_plate = ec_elgamal.add2(enc_plate, G[int(encoded_plate[i*2:i*2+2])][i])
 			for server_plate in range(server_plates_nbr):
 				encrypted_score = enc_plate
 				for i in [x for x in range(8) if x not in excluded_2_positions]:
 					encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
 				encrypted_scores.append(encrypted_score)
-	else:
+
+	if args.sensitivity >= 3:
 		print("frame_processor: Computing scores is not allowed for sensitivity greater than 2. Sending for 2 only!")
 	D = pickle.dumps(encrypted_scores)
-	sendScores(sock, enc_D)
-	print("camThread: The encrypted scores have been sent to the server")
-	
+	end_enc = time.time()
+	if args.verbose:	print("frame_processor: Encryption time: {} ms".format((end_enc-start_enc)*1000))
+	sendScores(sock, D)
+	print("frame_processor: The encrypted scores have been sent to the server")
+
+# def process_plates(list):
+
 
 if __name__ == '__main__':
-	sock = connectToServer()
-	if not load:
+	sock = connect_to_server()
+	if not args.load:
 		# Offline phase_______________________________________
 		get_pub_key(sock)
 		if args.verbose:	print("main: pub_key received and saved in {}".format(pub_key_file))
 		get_DB_file(sock)
-		if args.verbose:	print("main: Encrypted DB received and saved in {}, {}".format(DB_file))
+		if args.verbose:	print("main: Encrypted DB received and saved in {}".format(DB_file))
 		generate_local_files()
 		if args.verbose:	print("main: Local files have been generated")
 		fill_rand_numbers_file()
-		if args.verbose:	print("main: random files file {} has been filled".format(rand_numbers_file))
+		if args.verbose:	print("main: random files file {} has been filled".format(rand_nbrs_file))
 
 	# Online phase____________________________________________
 	ec_elgamal.prepare_for_enc(pub_key_file)
@@ -235,16 +251,18 @@ if __name__ == '__main__':
 		rawCapture = PiRGBArray(camera, size=(args.width, args.height))
 		for lframe in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 			frame = lframe.array
+			# ret, enc = cv2.imencode("*.bmp", frame)
 			rawCapture.truncate(0)
 			frame_processor(frame)
 			if cv2.waitKey(1) & 0xFF == ord('q'):
 				break
 
-	elif args.one_omage != "":
-		frame = cv2.imread(args.oneImage)
+	elif args.one_image != "":
+		frame = cv2.imread(args.one_image)
 		if frame is None:
-			raise Exception("main: Unable to load image: {}".format(args.oneImage))
+			raise Exception("main: Unable to load image: {}".format(args.one_image))
 		# = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+		print("main: Processing image: {}".format(args.one_image)) #TODO to remove
 		frame_processor(frame)
 
 	else:	#from PC captureDevice(0 or 1)
@@ -253,6 +271,7 @@ if __name__ == '__main__':
 		video_capture.set(3, args.width)
 		video_capture.set(4, args.height)
 		for ret, frame in video_capture.read():
+			# ret, enc = cv2.imencode("*.bmp", frame)
 			frame_processor(frame)
 			if cv2.waitKey(1) & 0xFF == ord('q'):
 				break
