@@ -14,6 +14,7 @@ import struct
 import random
 from multiprocessing import Pool
 from random import randint
+import itertools
 
 parser = argparse.ArgumentParser()
 #Capturing options in order:
@@ -43,6 +44,8 @@ rand_nbrs_max_bitlen = 128
 # Temporary global variables
 DB = []
 G = []
+encoded_plate = ""
+server_plates_nbr = 0
 
 def connect_to_server():
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -154,6 +157,8 @@ def sendScores(connection, scores):
 		print ("sendScores: Error")
 
 def frame_processor(frame):	# TODO check if add8 is better than 8xadd2 !!!
+	global encoded_plate
+	global server_plates_nbr
 	server_plates_nbr = len(DB)
 	print("frame_processor: server_plates_nbr={}".format(server_plates_nbr)) #TODO to delete
 	alpr = Alpr("us", "/etc/openalpr/openalpr.conf", "/usr/share/openalpr/runtime_data")
@@ -166,21 +171,32 @@ def frame_processor(frame):	# TODO check if add8 is better than 8xadd2 !!!
 	print("frame_processor: plate={}".format(plate)) #TODO to delete
 	print("frame_processor: encoded_plate={}".format(encoded_plate)) #TODO to delete
 
-	# start_enc = time.time()
-	# if args.verbose:	print("generate_DB_files: Generating encrypted DB...")
-	# pool = Pool(processes=args.cpus)
-	# DB = pool.map(encrypt_for_DB, (encoded_plates[int(i*len(encoded_plates)/args.cpus):int((i+1)*len(encoded_plates)/args.cpus)] for i in range(args.cpus)))
-	# DB = [ent for sublist in DB for ent in sublist]
-	# end_enc = time.time()
-	# if args.verbose:	print("generate_DB_files: Encrypted DB generated in: {} ms".format((end_enc-start_enc)*1000))
-
 	# when sensitivity is 0	# TODO almost done!!! optimize this part (parallelize)
 	start_enc = time.time()
+	# encrypted_scores = []
+	# enc_plate = G[int(encoded_plate[0:2])][0]	#enc_plate=Enc(q1q2..q8)
+	# for i in range(1, 8):
+	# 	enc_plate = ec_elgamal.add2(enc_plate, G[int(encoded_plate[i*2:i*2+2])][i])
+
+	pool = Pool(processes=args.cpus)
+	server_plates_list = range(server_plates_nbr)
+	encrypted_scores = pool.map(process_plates, (server_plates_list[int(i*server_plates_nbr/args.cpus):int((i+1)*server_plates_nbr/args.cpus)] for i in range(args.cpus)))
+	encrypted_scores = [ent for sublist in encrypted_scores for ent in sublist]
+	
+	if args.sensitivity >= 3:
+		print("frame_processor: Computing scores is not allowed for sensitivity greater than 2. Sending for 2 only!")
+	D = pickle.dumps(encrypted_scores)
+	end_enc = time.time()
+	if args.verbose:	print("frame_processor: Encryption time: {} ms".format((end_enc-start_enc)*1000))
+	sendScores(sock, D)
+	print("frame_processor: The encrypted scores have been sent to the server")
+
+def process_plates(list):
 	encrypted_scores = []
 	enc_plate = G[int(encoded_plate[0:2])][0]	#enc_plate=Enc(q1q2..q8)
 	for i in range(1, 8):
 		enc_plate = ec_elgamal.add2(enc_plate, G[int(encoded_plate[i*2:i*2+2])][i])
-	for server_plate in range(server_plates_nbr):
+	for server_plate in list:
 		encrypted_score = enc_plate
 		for i in range(8):
 			encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
@@ -192,7 +208,7 @@ def frame_processor(frame):	# TODO check if add8 is better than 8xadd2 !!!
 			enc_plate = G[int(encoded_plate[starting_position*2:starting_position*2+2])][starting_position]
 			for i in [x for x in range(1, 8) if x != excluded_position]:
 				enc_plate = ec_elgamal.add2(enc_plate, G[int(encoded_plate[i*2:i*2+2])][i])
-			for server_plate in range(server_plates_nbr):
+			for server_plate in list:
 				encrypted_score = enc_plate
 				for i in [x for x in range(8) if x != excluded_position]:
 					encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
@@ -205,22 +221,12 @@ def frame_processor(frame):	# TODO check if add8 is better than 8xadd2 !!!
 			enc_plate = G[int(encoded_plate[starting_position*2:starting_position*2+2])][starting_position]
 			for i in [x for x in range(1, 8) if x not in excluded_2_positions]:
 				enc_plate = ec_elgamal.add2(enc_plate, G[int(encoded_plate[i*2:i*2+2])][i])
-			for server_plate in range(server_plates_nbr):
+			for server_plate in list:
 				encrypted_score = enc_plate
 				for i in [x for x in range(8) if x not in excluded_2_positions]:
 					encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
 				encrypted_scores.append(encrypted_score)
-
-	if args.sensitivity >= 3:
-		print("frame_processor: Computing scores is not allowed for sensitivity greater than 2. Sending for 2 only!")
-	D = pickle.dumps(encrypted_scores)
-	end_enc = time.time()
-	if args.verbose:	print("frame_processor: Encryption time: {} ms".format((end_enc-start_enc)*1000))
-	sendScores(sock, D)
-	print("frame_processor: The encrypted scores have been sent to the server")
-
-# def process_plates(list):
-
+	return encrypted_scores
 
 if __name__ == '__main__':
 	sock = connect_to_server()
