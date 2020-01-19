@@ -33,11 +33,13 @@ parser.add_argument('--load', 			action='store_true',		help="Load from stored en
 args = parser.parse_args()
 
 plate_size		= 8					# max number of chars in the plate
-elgamal_ct_size = 130
 DB_file 		= "rec_DB.data"
 G_file			= "G.data"
 pub_key_file 	= "rec_pub.txt"
 rand_nbrs_file	= "rand_num.data"
+r1_list			= []	#list of randomly generated r1
+r2_list			= []	#list of randomly generated r2
+ec_elgamal_ct_size	 = 130
 rand_nbrs_min_bitlen = 128
 rand_nbrs_max_bitlen = 128
 
@@ -87,6 +89,8 @@ def fill_rand_numbers_file():
 	plates_count = len(DB)
 	ec_elgamal.prepare_for_enc(pub_key_file)
 	f = open(rand_nbrs_file, "wb")
+	required_rand_nbrs = plates_count if args.sensitivity == 0 else plates_count*plate_size if args.sensitivity == 1 \
+	else 84000 if args.sensitivity == 2 else 0
 	for i in range(plates_count):
 		rand1 = random.getrandbits(randint(rand_nbrs_min_bitlen, rand_nbrs_max_bitlen))
 		rand2 = random.getrandbits(randint(rand_nbrs_min_bitlen, rand_nbrs_max_bitlen))
@@ -133,11 +137,11 @@ def generate_local_files():
 	pool.close()
 	end_gen_G = time.time()
 	if args.verbose:	print("generate_local_files: G generated in: {} ms".format((end_gen_G-start_gen_G)*1000))
-	# results_file = open("camera_results.txt","a+")
+	results_file = open("camera_results.txt","a+")
 	# storage = ec_elgamal_ct_size*(128*suspects_count*256/G_portion+128*suspects_count+256+suspects_count)+256*suspects_count if G_portion>0 else ec_elgamal_ct_size*(128*suspects_count+128*suspects_count+256+suspects_count)+256*suspects_count
 	# storage = storage*1.00/1024/1024
-	# results_file.write("Offile:M= {} CPUs_camera= {} F_G_gen= {} G_portion= {} storage((GorC)+B+F+rand)= {}\n".format(suspects_count,args.cpus,end_gen_files-start_gen_files,G_portion,storage))
-	# results_file.close()
+	results_file.write("Offile:CPUs_camera= {} G_gen= {}\n".format(args.cpus,(end_gen_G-start_gen_G)*1000))
+	results_file.close()
 
 def encode_plate_number(detected_plate):
 	encoded_plate = []
@@ -159,50 +163,78 @@ def sendScores(connection, scores):
 def frame_processor(frame):	# TODO check if add8 is better than 8xadd2 !!!
 	global encoded_plate
 	global server_plates_nbr
-	server_plates_nbr = len(DB)
-	print("frame_processor: server_plates_nbr={}".format(server_plates_nbr)) #TODO to delete
 	alpr = Alpr("us", "/etc/openalpr/openalpr.conf", "/usr/share/openalpr/runtime_data")
+	server_plates_nbr = len(DB)
+	recog_start_time = time.time()
+	# print("frame_processor: server_plates_nbr={}".format(server_plates_nbr)) #TODO to delete
 	results = alpr.recognize_ndarray(frame)
 	plate = results.values()[5][0].values()[0] if results.values()[5] != [] else []
 	if plate == []:
 		if args.verbose:	print("frame_processor: No plate number in frame")
 		return 0
 	encoded_plate = encode_plate_number(plate)
-	print("frame_processor: plate={}".format(plate)) #TODO to delete
-	print("frame_processor: encoded_plate={}".format(encoded_plate)) #TODO to delete
+	recog_end_time = time.time()
+	print("frame_processor: Detected plate={}".format(plate)) #TODO to delete
+	if args.verbose:	print("frame_processor: Plate recognition = {} ms".format((recog_end_time-recog_start_time)*1000))
 
-	# when sensitivity is 0	# TODO almost done!!! optimize this part (parallelize)
+	# When sensitivity is 0	# TODO almost done!!! optimize this part (parallelize). DONE--
 	start_enc = time.time()
-	# encrypted_scores = []
-	# enc_plate = G[int(encoded_plate[0:2])][0]	#enc_plate=Enc(q1q2..q8)
-	# for i in range(1, 8):
-	# 	enc_plate = ec_elgamal.add2(enc_plate, G[int(encoded_plate[i*2:i*2+2])][i])
-
+	dist_comp_start = time.time()
 	pool = Pool(processes=args.cpus)
 	server_plates_list = range(server_plates_nbr)
 	encrypted_scores = pool.map(process_plates, (server_plates_list[int(i*server_plates_nbr/args.cpus):int((i+1)*server_plates_nbr/args.cpus)] for i in range(args.cpus)))
 	encrypted_scores = [ent for sublist in encrypted_scores for ent in sublist]
+	dist_comp_end = time.time()
+	if args.verbose:	print("frame_processor: Computing distances = {} ms".format((dist_comp_end-dist_comp_start)*1000))
 	
+	dist_obf_start = time.time()
+	pool = Pool(processes=args.cpus)
+	obfs_scores = pool.map(obfuscate_scores, (encrypted_scores[int(i*len(encrypted_scores)/args.cpus):int((i+1)*len(encrypted_scores)/args.cpus)] for i in range(args.cpus)))
+	obfs_scores = [ent for sublist in obfs_scores for ent in sublist]
+	dist_obf_end = time.time()
+
 	if args.sensitivity >= 3:
 		print("frame_processor: Computing scores is not allowed for sensitivity greater than 2. Sending for 2 only!")
-	D = pickle.dumps(encrypted_scores)
 	end_enc = time.time()
+
+	if args.verbose:	print("frame_processor: Obfuscating distances = {} ms".format((dist_obf_end-dist_obf_start)*1000))
 	if args.verbose:	print("frame_processor: Encryption time: {} ms".format((end_enc-start_enc)*1000))
+	if args.verbose:	print("frame_processor: Time(plate_recog + scores_comp + scores_obfs) for {} suspects: {} ms"\
+		.format(server_plates_nbr, (end_enc-recog_start_time)*1000))
+
+	results_file = open("camera_results.txt","a+")
+	results_file.write("Online:M= {} CPUs_camera= {} plate_recog= {} dist_comp= {} dist_obf= {} enc_time= {} total_time= {} sensitivity= {} onl_comm= {}\n"\
+		.format(server_plates_nbr,args.cpus,(recog_end_time-recog_start_time)*1000,(dist_comp_end-dist_comp_start)*1000,(dist_obf_end-dist_obf_start)*1000,(end_enc-start_enc)*1000,(end_enc-recog_start_time)*1000,args.sensitivity,len(encrypted_scores)*128*1.00/1024))
+	results_file.close()
+
+	D = pickle.dumps(obfs_scores)
 	sendScores(sock, D)
 	print("frame_processor: The encrypted scores have been sent to the server")
+	data = sock.recv(11)
+	if (data == "GET image  "):
+		# sending the car's image
+		image = pickle.dumps(frame)
+		send_msg(sock, image)
+		print("frame_processor: Car plate detected! Image has been sent")
+		end_rtt_time = time.time()
+		if args.verbose:	print("frame_processor: Suspect detected: total rtt: {} ms".format((end_rtt_time-recog_start_time)*1000))
+		
+		results_file = open("camera_results.txt","a+")
+		results_file.write("Online:RTT= {}\n".format(end_rtt_time-recog_start_time))
+		results_file.close()
 
 def process_plates(list):
 	encrypted_scores = []
-	enc_plate = G[int(encoded_plate[0:2])][0]	#enc_plate=Enc(q1q2..q8)
-	for i in range(1, 8):
-		enc_plate = ec_elgamal.add2(enc_plate, G[int(encoded_plate[i*2:i*2+2])][i])
-	for server_plate in list:
-		encrypted_score = enc_plate
-		for i in range(8):
-			encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
-		encrypted_scores.append(encrypted_score)
-
-	if args.sensitivity >= 1:	# TODO these two if statements could be merged
+	if args.sensitivity == 0:
+		enc_plate = G[int(encoded_plate[0:2])][0]	#enc_plate=Enc(q1q2..q8)
+		for i in range(1, 8):
+			enc_plate = ec_elgamal.add2(enc_plate, G[int(encoded_plate[i*2:i*2+2])][i])
+		for server_plate in list:
+			encrypted_score = enc_plate
+			for i in range(8):
+				encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
+			encrypted_scores.append(encrypted_score)
+	elif args.sensitivity == 1:	# TODO these two if statements could be merged
 		for excluded_position in range(8):
 			starting_position = 0 if excluded_position != 0 else 1
 			enc_plate = G[int(encoded_plate[starting_position*2:starting_position*2+2])][starting_position]
@@ -213,8 +245,7 @@ def process_plates(list):
 				for i in [x for x in range(8) if x != excluded_position]:
 					encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
 				encrypted_scores.append(encrypted_score)
-	
-	if args.sensitivity >= 2:
+	elif args.sensitivity == 2:
 		excluded_positions_range = [(f,s) for f in range(8) for s in range(f, 8) if f != s]
 		for excluded_2_positions in excluded_positions_range:
 			starting_position = 0 if 0 not in excluded_2_positions else 1 if 1 not in excluded_2_positions else 2
@@ -227,6 +258,14 @@ def process_plates(list):
 					encrypted_score = ec_elgamal.add2(encrypted_score, DB[server_plate][i])
 				encrypted_scores.append(encrypted_score)
 	return encrypted_scores
+
+def obfuscate_scores(list):
+	return [ec_elgamal.mult(str(random.getrandbits(randint(rand_nbrs_min_bitlen, rand_nbrs_max_bitlen))),score) for score in list]
+	# obfuscated_scores = []
+	# for i in enumerate(len(list)):	#TODO not r1_list[i] and r2_list[i]. Each thread has its own i
+	# 	# obfuscated_scores.append(ec_elgamal.add2(ec_elgamal.mult(r1_list[i], list[i]), r2_list[i]))
+	# 	obfuscated_scores.append(ec_elgamal.mult(r1_list[i], list[i]))
+	# return obfuscated_scores
 
 if __name__ == '__main__':
 	sock = connect_to_server()
@@ -247,7 +286,19 @@ if __name__ == '__main__':
 	G = np.load(str(G_file+".npy"))
 	plates_count = len(DB)
 
+	file = open(rand_nbrs_file, "rb")
+	r1 = file.readline()
+	while r1:
+		r1_list.append(r1)
+		r2 = file.read(ec_elgamal_ct_size)
+		r2_list.append(r2)
+		r1 = file.readline()
+		if not r1:
+			break
+	file.close()
+
 	if args.pi_camera:
+		#TODO need to implement using detected plates, mutex... like in BlindGuardian
 		from picamera.array import PiRGBArray
 		from picamera import PiCamera
 		camera = PiCamera()
