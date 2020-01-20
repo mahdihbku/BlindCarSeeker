@@ -1,2 +1,3 @@
 # BlindCarSeeker
-Privacy-preserving car plates matcher
+Privacy-preserving car license-plates matcher
+
