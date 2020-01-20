@@ -3,6 +3,10 @@ Privacy-preserving car license-plates matcher
 
 ## Installation
 Requires [OpenAlpr](http://doc.openalpr.com/api.html#commercial-sdk)
+
+License request [link](https://license.openalpr.com/evalrequest/)
+
+License to be put in `/etc/openalpr/license.conf`
 ```bash
 swig -python ec_elgamal.i
 gcc -c ec_elgamal.c ec_elgamal_wrap.c -lcrypto -I/usr/include/python2.7 -fPIC
