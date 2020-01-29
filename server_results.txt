@@ -1,0 +1,127 @@
+Offline:M= 10 CPUs_srvr= 16 recog= 0.658988952637 DB_gen= 31.6848754883 storage/off_comm= 10.0
+Online:dec_time_of 10 ciphertexts: 1.54089927673
+Online:dec_time_of 10 ciphertexts: 1.54709815979
+Offline:M= 10 CPUs_srvr= 16 recog= 0.696897506714 DB_gen= 34.3990325928 storage/off_comm= 10.0
+Online:dec_time_of 10 ciphertexts: 1.55591964722
+Online:dec_time_of 10 ciphertexts: 1.93309783936
+Online:dec_time_of 80 ciphertexts: 10.9939575195
+Online:dec_time_of 80 ciphertexts: 13.1640434265
+Online:dec_time_of 80 ciphertexts: 11.7871761322
+Online:dec_time_of 280 ciphertexts: 37.9889011383
+Online:dec_time_of 280 ciphertexts: 42.9289340973
+Online:dec_time_of 280 ciphertexts: 45.8660125732
+Offline:M= 100 CPUs_srvr= 16 recog= 1.03998184204 DB_gen= 55.9599399567 storage/off_comm= 100.0
+Offline:M= 100 CPUs_srvr= 16 recog= 1.08194351196 DB_gen= 55.743932724 storage/off_comm= 100.0
+Online:dec_time_of 100 ciphertexts: 14.7287845612
+Online:dec_time_of 100 ciphertexts: 12.552022934
+Online:dec_time_of 100 ciphertexts: 12.5088691711
+Online:dec_time_of 800 ciphertexts: 47.6820468903
+Online:dec_time_of 800 ciphertexts: 49.8549938202
+Online:dec_time_of 800 ciphertexts: 51.9659519196
+Online:dec_time_of 2800 ciphertexts: 79.9980163574
+Online:dec_time_of 2800 ciphertexts: 73.520898819
+Online:dec_time_of 2800 ciphertexts: 85.3369235992
+Offline:M= 500 CPUs_srvr= 16 recog= 2.65002250671 DB_gen= 150.906085968 storage/off_comm= 500.0
+Online:dec_time_of 500 ciphertexts: 42.5901412964
+Online:dec_time_of 500 ciphertexts: 44.2039966583
+Online:dec_time_of 500 ciphertexts: 51.8810749054
+Online:dec_time_of 4000 ciphertexts: 85.0689411163
+Online:dec_time_of 4000 ciphertexts: 96.5719223022
+Online:dec_time_of 4000 ciphertexts: 92.561006546
+Online:dec_time_of 14000 ciphertexts: 229.557037354
+Online:dec_time_of 14000 ciphertexts: 231.292009354
+Online:dec_time_of 14000 ciphertexts: 226.235866547
+Offline:M= 1000 CPUs_srvr= 16 recog= 4.51683998108 DB_gen= 264.276027679 storage/off_comm= 1000.0
+Online:dec_time_of 1000 ciphertexts: 57.9469203949
+Online:dec_time_of 1000 ciphertexts: 54.8219680786
+Online:dec_time_of 1000 ciphertexts: 56.5750598907
+Online:dec_time_of 8000 ciphertexts: 148.118972778
+Online:dec_time_of 8000 ciphertexts: 145.714044571
+Online:dec_time_of 8000 ciphertexts: 155.983924866
+Online:dec_time_of 28000 ciphertexts: 397.207021713
+Online:dec_time_of 28000 ciphertexts: 425.467014313
+Online:dec_time_of 28000 ciphertexts: 439.081907272
+Offline:M= 2000 CPUs_srvr= 16 recog= 8.43811035156 DB_gen= 460.813045502 storage/off_comm= 2000.0
+Offline:M= 2000 CPUs_srvr= 16 recog= 8.41093063354 DB_gen= 443.54391098 storage/off_comm= 2000.0
+Online:dec_time_of 2000 ciphertexts: 58.0561161041
+Online:dec_time_of 2000 ciphertexts: 66.4691925049
+Online:dec_time_of 2000 ciphertexts: 59.140920639
+Online:dec_time_of 16000 ciphertexts: 238.988876343
+Online:dec_time_of 16000 ciphertexts: 235.747098923
+Online:dec_time_of 16000 ciphertexts: 259.768009186
+Online:dec_time_of 56000 ciphertexts: 732.23400116
+Online:dec_time_of 56000 ciphertexts: 749.264001846
+Online:dec_time_of 56000 ciphertexts: 776.691913605
+Offline:M= 3000 CPUs_srvr= 16 recog= 12.3798847198 DB_gen= 633.964061737 storage/off_comm= 3000.0
+Online:dec_time_of 3000 ciphertexts: 76.0259628296
+Online:dec_time_of 3000 ciphertexts: 69.5719718933
+Online:dec_time_of 3000 ciphertexts: 78.850030899
+Online:dec_time_of 24000 ciphertexts: 344.324827194
+Online:dec_time_of 24000 ciphertexts: 360.070943832
+Online:dec_time_of 84000 ciphertexts: 1039.35599327
+Online:dec_time_of 84000 ciphertexts: 1060.81604958
+Online:dec_time_of 84000 ciphertexts: 1019.16003227
+Offline:M= 10 CPUs_srvr= 16 recog= 0.674962997437 DB_gen= 33.5519313812 storage/off_comm= 10.0
+Offline:M= 10 CPUs_srvr= 16 recog= 0.585079193115 DB_gen= 32.4418544769 storage/off_comm= 10.0
+Online:dec_time_of 10 ciphertexts: 1.51896476746
+Online:dec_time_of 10 ciphertexts: 1.51014328003
+Online:dec_time_of 10 ciphertexts: 0.885963439941
+Online:dec_time_of 80 ciphertexts: 6.98590278625
+Online:dec_time_of 80 ciphertexts: 13.3619308472
+Online:dec_time_of 80 ciphertexts: 9.41801071167
+Offline:M= 100 CPUs_srvr= 16 recog= 1.03306770325 DB_gen= 58.5169792175 storage/off_comm= 100.0
+Offline:M= 10 CPUs_srvr= 16 recog= 0.578880310059 DB_gen= 32.7529907227 storage/off_comm= 10.0
+Online:dec_time_of 280 ciphertexts: 37.8849506378
+Online:dec_time_of 280 ciphertexts: 41.4819717407
+Online:dec_time_of 280 ciphertexts: 44.497013092
+Offline:M= 100 CPUs_srvr= 16 recog= 1.00994110107 DB_gen= 56.823015213 storage/off_comm= 100.0
+Offline:M= 100 CPUs_srvr= 16 recog= 0.943183898926 DB_gen= 54.7931194305 storage/off_comm= 100.0
+Online:dec_time_of 100 ciphertexts: 12.9001140594
+Online:dec_time_of 100 ciphertexts: 12.3519897461
+Online:dec_time_of 100 ciphertexts: 13.3810043335
+Online:dec_time_of 800 ciphertexts: 47.1608638763
+Online:dec_time_of 800 ciphertexts: 52.7830123901
+Online:dec_time_of 800 ciphertexts: 59.6129894257
+Online:dec_time_of 2800 ciphertexts: 83.4419727325
+Online:dec_time_of 2800 ciphertexts: 88.800907135
+Online:dec_time_of 2800 ciphertexts: 87.8348350525
+Offline:M= 500 CPUs_srvr= 16 recog= 2.5360584259 DB_gen= 162.000894547 storage/off_comm= 500.0
+Online:dec_time_of 500 ciphertexts: 43.7309741974
+Online:dec_time_of 500 ciphertexts: 50.1191616058
+Online:dec_time_of 500 ciphertexts: 49.0999221802
+Online:dec_time_of 4000 ciphertexts: 100.886821747
+Online:dec_time_of 4000 ciphertexts: 109.070062637
+Online:dec_time_of 4000 ciphertexts: 97.039937973
+Online:dec_time_of 14000 ciphertexts: 226.489067078
+Online:dec_time_of 14000 ciphertexts: 244.964838028
+Online:dec_time_of 14000 ciphertexts: 248.839855194
+Offline:M= 1000 CPUs_srvr= 16 recog= 4.49681282043 DB_gen= 272.784948349 storage/off_comm= 1000.0
+Online:dec_time_of 1000 ciphertexts: 59.1070652008
+Online:dec_time_of 1000 ciphertexts: 51.7101287842
+Online:dec_time_of 1000 ciphertexts: 63.2078647614
+Online:dec_time_of 8000 ciphertexts: 142.633914948
+Online:dec_time_of 8000 ciphertexts: 148.11205864
+Online:dec_time_of 8000 ciphertexts: 154.350042343
+Online:dec_time_of 28000 ciphertexts: 412.603139877
+Online:dec_time_of 28000 ciphertexts: 406.737089157
+Online:dec_time_of 28000 ciphertexts: 439.67294693
+Offline:M= 2000 CPUs_srvr= 16 recog= 8.80718231201 DB_gen= 442.669153214 storage/off_comm= 2000.0
+Online:dec_time_of 2000 ciphertexts: 69.4649219513
+Online:dec_time_of 2000 ciphertexts: 69.3900585175
+Online:dec_time_of 2000 ciphertexts: 76.5368938446
+Online:dec_time_of 16000 ciphertexts: 248.831987381
+Online:dec_time_of 16000 ciphertexts: 259.329080582
+Online:dec_time_of 16000 ciphertexts: 272.055149078
+Online:dec_time_of 56000 ciphertexts: 772.819042206
+Online:dec_time_of 56000 ciphertexts: 766.78609848
+Online:dec_time_of 56000 ciphertexts: 770.526885986
+Offline:M= 3000 CPUs_srvr= 16 recog= 12.3119354248 DB_gen= 654.46305275 storage/off_comm= 3000.0
+Online:dec_time_of 3000 ciphertexts: 88.320016861
+Online:dec_time_of 3000 ciphertexts: 83.4760665894
+Online:dec_time_of 3000 ciphertexts: 84.114074707
+Online:dec_time_of 24000 ciphertexts: 349.047899246
+Online:dec_time_of 24000 ciphertexts: 344.558000565
+Online:dec_time_of 24000 ciphertexts: 358.962059021
+Online:dec_time_of 84000 ciphertexts: 1150.89583397
+Online:dec_time_of 84000 ciphertexts: 1037.24503517
+Online:dec_time_of 84000 ciphertexts: 1083.15610886
