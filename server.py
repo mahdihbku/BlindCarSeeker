@@ -19,7 +19,6 @@ parser.add_argument('--img_dim',		type=int,	default=96,		help="Default image dim
 parser.add_argument('--server_port',	type=int,	default=6546,	help="Port of the server."								)
 parser.add_argument('--server_ip',		type=str,	default='127.0.0.1',	help="IP of the server."						)
 parser.add_argument('--cpus',			type=int,	default=16,		help="Number of parallel CPUs to be used."				)
-# parser.add_argument('--sensitivity',	type=int,	default=2,		help="Non-matching characters in the plate (0,1,2)."	)
 parser.add_argument('--generate_keys',	action='store_true', 		help="Generate new server keys."						)
 parser.add_argument('--verbose',		action='store_true', 		help="Output more details."								)
 parser.add_argument('--load', 			action='store_true', 		help="Load from stored encrypted DB."					)
@@ -87,7 +86,7 @@ def get_scores(connection):
 		# if args.verbose:	print(D)
 
 		results_file = open("server_results.txt", "a+")
-		results_file.write("Online:dec_time= {}\n".format((end_dec-start_dec)*1000))
+		results_file.write("Online:dec_time_of {} ciphertexts: {}\n".format(len(D), (end_dec-start_dec)*1000))
 		results_file.close()
 		if (0 in D):	# SUSPECT DETECTED!!!
 			# detected_id = D.index(0)
@@ -152,12 +151,12 @@ def generate_DB_files():	#TODO checking
 	np.save(DB_file, DB)
 	del DB
 	results_file = open("server_results.txt", "a+")
-	results_file.write("Offline:M= {} CPUs_srvr= {} recog= {} DB_gen= {} storage(DB+keys)= {} off_comm= {}\n"\
-		.format(len(encoded_plates), args.cpus, (end_recognition-start_recognition)*1000, (end_enc-start_enc)*1000, plate_size*len(encoded_plates)*128*1.00/1024, plate_size*len(encoded_plates)*128*1.00/1024, len(encoded_plates)*512*1.00/1024))
+	results_file.write("Offline:M= {} CPUs_srvr= {} recog= {} DB_gen= {} storage/off_comm= {}\n"\
+		.format(len(encoded_plates), args.cpus, (end_recognition-start_recognition)*1000, (end_enc-start_enc)*1000, plate_size*len(encoded_plates)*128*1.00/1024))
 	results_file.close()
 
 def encrypt_for_DB(list):
-	# list = [[p11p12p13..p18],[p21p22p23..p28],..,[pN1pN2pN3..pN8]]
+	# list = [[p11p12p13..p1N],[p21p22p23..p2N],..,[pM1pM2pM3..pMN]]
 	enc_plates = []
 	for plate in list:
 		enc_plate = []
@@ -165,7 +164,7 @@ def encrypt_for_DB(list):
 			enc_plate.append(ec_elgamal.encrypt_ec(str(int(plate[i:i+2])*10**i)))
 		enc_plates.append(enc_plate)
 	return enc_plates
-	# enc_plates = [Enc(p11),Enc(p12),..,Enc(p18),Enc(p21),Enc(p22),..,Enc(p28),Enc(pN1),Enc(pN2),..,Enc(pN8)]
+	# enc_plates = [Enc(p11),Enc(p12),..,Enc(p1N),Enc(p21),Enc(p22),..,Enc(p2N),Enc(pM1),Enc(pM2),..,Enc(pMN)]
 
 def send_msg(sock, msg):
 	msg = struct.pack('>I', len(msg)) + msg
