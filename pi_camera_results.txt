@@ -1,0 +1,159 @@
+Offile:CPUs_camera= 4 Y_gen= 567.133903503 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 31.0130119324 ext_DB_size= 1.25
+Online:M= 10 CPUs_camera= 4 plate_recog= 552.521944046 dist_comp= 44.862985611 dist_obf= 49.2260456085 enc_time= 94.2709445953 total_time= 647.0079422 sensitivity= 0 onl_comm= 1.25
+Offile:CPUs_camera= 4 Y_gen= 531.651973724 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 36.3309383392 ext_DB_size= 1.25
+Online:M= 10 CPUs_camera= 4 plate_recog= 576.025009155 dist_comp= 46.2739467621 dist_obf= 56.9500923157 enc_time= 103.411197662 total_time= 679.69918251 sensitivity= 0 onl_comm= 1.25
+Offile:CPUs_camera= 4 Y_gen= 523.265838623 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 47.1069812775 ext_DB_size= 1.25
+Online:M= 10 CPUs_camera= 4 plate_recog= 548.66194725 dist_comp= 41.2540435791 dist_obf= 48.3639240265 enc_time= 89.7669792175 total_time= 638.954877853 sensitivity= 0 onl_comm= 1.25
+Online:RTT= 1.30895280838
+Offile:CPUs_camera= 4 Y_gen= 525.200843811 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 41.7399406433 ext_DB_size= 1.25
+Online:M= 10 CPUs_camera= 4 plate_recog= 552.4559021 dist_comp= 41.6951179504 dist_obf= 47.5668907166 enc_time= 89.4539356232 total_time= 642.233848572 sensitivity= 0 onl_comm= 1.25
+Online:RTT= 1.30779981613
+Offile:CPUs_camera= 4 Y_gen= 541.173934937 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 136.609077454 ext_DB_size= 10.0
+Online:M= 10 CPUs_camera= 4 plate_recog= 541.925191879 dist_comp= 61.9490146637 dist_obf= 84.153175354 enc_time= 146.284103394 total_time= 688.428163528 sensitivity= 1 onl_comm= 10.0
+Online:RTT= 1.37310409546
+Offile:CPUs_camera= 4 Y_gen= 528.283119202 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 129.677057266 ext_DB_size= 10.0
+Online:M= 10 CPUs_camera= 4 plate_recog= 548.142910004 dist_comp= 66.6589736938 dist_obf= 82.6609134674 enc_time= 149.50799942 total_time= 697.885990143 sensitivity= 1 onl_comm= 10.0
+Online:RTT= 1.38783288002
+Offile:CPUs_camera= 4 Y_gen= 529.514789581 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 128.717899323 ext_DB_size= 10.0
+Online:M= 10 CPUs_camera= 4 plate_recog= 558.622837067 dist_comp= 59.2069625854 dist_obf= 82.2820663452 enc_time= 141.633987427 total_time= 700.407981873 sensitivity= 1 onl_comm= 10.0
+Online:RTT= 1.39194989204
+Offile:CPUs_camera= 4 Y_gen= 534.605979919 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 354.750156403 ext_DB_size= 35.0
+Online:M= 10 CPUs_camera= 4 plate_recog= 549.066066742 dist_comp= 114.539861679 dist_obf= 191.677093506 enc_time= 306.365013123 total_time= 855.583190918 sensitivity= 2 onl_comm= 35.0
+Online:RTT= 1.59817409515
+Offile:CPUs_camera= 4 Y_gen= 531.186103821 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 353.521108627 ext_DB_size= 35.0
+Online:M= 10 CPUs_camera= 4 plate_recog= 548.869848251 dist_comp= 104.568958282 dist_obf= 186.902046204 enc_time= 291.612863541 total_time= 840.706825256 sensitivity= 2 onl_comm= 35.0
+Online:RTT= 1.59097003937
+Offile:CPUs_camera= 4 Y_gen= 589.313983917 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 358.824014664 ext_DB_size= 35.0
+Online:M= 10 CPUs_camera= 4 plate_recog= 551.602125168 dist_comp= 100.52895546 dist_obf= 192.517995834 enc_time= 293.184995651 total_time= 844.949007034 sensitivity= 2 onl_comm= 35.0
+Online:RTT= 1.59943509102
+Offile:CPUs_camera= 4 Y_gen= 538.739919662 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 179.527997971 ext_DB_size= 12.5
+Online:M= 100 CPUs_camera= 4 plate_recog= 547.412872314 dist_comp= 54.694890976 dist_obf= 97.9070663452 enc_time= 152.744054794 total_time= 700.345039368 sensitivity= 0 onl_comm= 12.5
+Online:RTT= 1.39549994469
+Offile:CPUs_camera= 4 Y_gen= 534.333944321 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 180.974006653 ext_DB_size= 12.5
+Online:M= 100 CPUs_camera= 4 plate_recog= 550.748109818 dist_comp= 49.6280193329 dist_obf= 95.1719284058 enc_time= 144.950866699 total_time= 695.842981339 sensitivity= 0 onl_comm= 12.5
+Online:RTT= 1.3850300312
+Offile:CPUs_camera= 4 Y_gen= 521.07000351 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 176.507949829 ext_DB_size= 12.5
+Online:M= 100 CPUs_camera= 4 plate_recog= 544.100999832 dist_comp= 56.9839477539 dist_obf= 94.5510864258 enc_time= 151.72791481 total_time= 696.068048477 sensitivity= 0 onl_comm= 12.5
+Online:RTT= 1.39473605156
+Offile:CPUs_camera= 4 Y_gen= 522.66907692 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 1114.28594589 ext_DB_size= 100.0
+Online:M= 100 CPUs_camera= 4 plate_recog= 550.897836685 dist_comp= 101.907014847 dist_obf= 450.805902481 enc_time= 553.120136261 total_time= 1104.50196266 sensitivity= 1 onl_comm= 100.0
+Online:RTT= 1.93487787247
+Offile:CPUs_camera= 4 Y_gen= 548.056840897 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 1140.25402069 ext_DB_size= 100.0
+Online:M= 100 CPUs_camera= 4 plate_recog= 559.743881226 dist_comp= 116.590023041 dist_obf= 449.79095459 enc_time= 566.656827927 total_time= 1126.55591965 sensitivity= 1 onl_comm= 100.0
+Online:RTT= 1.95320987701
+Offile:CPUs_camera= 4 Y_gen= 558.403968811 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 1115.92388153 ext_DB_size= 100.0
+Online:M= 100 CPUs_camera= 4 plate_recog= 553.719997406 dist_comp= 100.481033325 dist_obf= 447.948932648 enc_time= 548.647880554 total_time= 1102.61201859 sensitivity= 1 onl_comm= 100.0
+Online:RTT= 1.92602801323
+Offile:CPUs_camera= 4 Y_gen= 520.020961761 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 3374.17006493 ext_DB_size= 350.0
+Online:M= 100 CPUs_camera= 4 plate_recog= 561.22303009 dist_comp= 276.848077774 dist_obf= 1448.1408596 enc_time= 1725.18992424 total_time= 2286.55600548 sensitivity= 2 onl_comm= 350.0
+Online:RTT= 3.40960001945
+Offile:CPUs_camera= 4 Y_gen= 535.624027252 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 3310.87493896 ext_DB_size= 350.0
+Online:M= 100 CPUs_camera= 4 plate_recog= 548.440933228 dist_comp= 255.60593605 dist_obf= 1444.38099861 enc_time= 1700.16503334 total_time= 2248.75283241 sensitivity= 2 onl_comm= 350.0
+Online:RTT= 3.3515689373
+Offile:CPUs_camera= 4 Y_gen= 525.251865387 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 3314.76712227 ext_DB_size= 350.0
+Online:M= 100 CPUs_camera= 4 plate_recog= 552.870988846 dist_comp= 263.777971268 dist_obf= 1440.17791748 enc_time= 1704.14400101 total_time= 2257.15899467 sensitivity= 2 onl_comm= 350.0
+Online:RTT= 3.37997508049
+Offile:CPUs_camera= 4 Y_gen= 517.729997635 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 800.673007965 ext_DB_size= 62.5
+Online:M= 500 CPUs_camera= 4 plate_recog= 548.943042755 dist_comp= 69.8461532593 dist_obf= 292.423009872 enc_time= 362.416028976 total_time= 911.488056183 sensitivity= 0 onl_comm= 62.5
+Online:RTT= 1.68069410324
+Offile:CPUs_camera= 4 Y_gen= 547.178983688 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 805.803060532 ext_DB_size= 62.5
+Online:M= 500 CPUs_camera= 4 plate_recog= 551.229953766 dist_comp= 72.5347995758 dist_obf= 305.490970612 enc_time= 378.196001053 total_time= 929.664850235 sensitivity= 0 onl_comm= 62.5
+Online:RTT= 1.7080039978
+Offile:CPUs_camera= 4 Y_gen= 532.708883286 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 814.871072769 ext_DB_size= 62.5
+Online:M= 500 CPUs_camera= 4 plate_recog= 552.644968033 dist_comp= 75.4680633545 dist_obf= 291.348934174 enc_time= 366.970062256 total_time= 919.806957245 sensitivity= 0 onl_comm= 62.5
+Online:RTT= 1.70022296906
+Offile:CPUs_camera= 4 Y_gen= 535.737991333 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 5472.3649025 ext_DB_size= 500.0
+Online:M= 500 CPUs_camera= 4 plate_recog= 546.611070633 dist_comp= 295.778989792 dist_obf= 2057.51395226 enc_time= 2353.49607468 total_time= 2900.25305748 sensitivity= 1 onl_comm= 500.0
+Online:RTT= 4.17147707939
+Offile:CPUs_camera= 4 Y_gen= 521.157979965 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 5504.99892235 ext_DB_size= 500.0
+Online:M= 500 CPUs_camera= 4 plate_recog= 550.312995911 dist_comp= 297.01590538 dist_obf= 2060.55593491 enc_time= 2357.76901245 total_time= 2908.21790695 sensitivity= 1 onl_comm= 500.0
+Online:RTT= 4.19687795639
+Offile:CPUs_camera= 4 Y_gen= 536.659002304 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 5582.41295815 ext_DB_size= 500.0
+Online:M= 500 CPUs_camera= 4 plate_recog= 558.929920197 dist_comp= 296.499967575 dist_obf= 2058.01010132 enc_time= 2354.72297668 total_time= 2913.80500793 sensitivity= 1 onl_comm= 500.0
+Online:RTT= 4.19076895714
+Offile:CPUs_camera= 4 Y_gen= 510.040044785 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 16466.4950371 ext_DB_size= 1750.0
+Online:M= 500 CPUs_camera= 4 plate_recog= 543.63489151 dist_comp= 993.867874146 dist_obf= 7395.3359127 enc_time= 8389.4469738 total_time= 8933.31980705 sensitivity= 2 onl_comm= 1750.0
+Online:RTT= 11.7607009411
+Offile:CPUs_camera= 4 Y_gen= 528.442144394 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 16476.3281345 ext_DB_size= 1750.0
+Online:M= 500 CPUs_camera= 4 plate_recog= 544.909000397 dist_comp= 990.32497406 dist_obf= 7173.90799522 enc_time= 8164.43514824 total_time= 8709.48195457 sensitivity= 2 onl_comm= 1750.0
+Online:RTT= 11.5231969357
+Offile:CPUs_camera= 4 Y_gen= 515.520811081 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 16464.1849995 ext_DB_size= 1750.0
+Online:M= 500 CPUs_camera= 4 plate_recog= 547.755002975 dist_comp= 988.186836243 dist_obf= 7190.60206413 enc_time= 8178.98416519 total_time= 8726.91702843 sensitivity= 2 onl_comm= 1750.0
+Online:RTT= 11.5262098312
+Offile:CPUs_camera= 4 Y_gen= 523.517131805 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 1577.15392113 ext_DB_size= 125.0
+Online:M= 1000 CPUs_camera= 4 plate_recog= 549.789905548 dist_comp= 115.298986435 dist_obf= 551.844835281 enc_time= 667.304039001 total_time= 1217.24295616 sensitivity= 0 onl_comm= 125.0
+Online:RTT= 2.07497501373
+Offile:CPUs_camera= 4 Y_gen= 532.561063766 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 1604.9220562 ext_DB_size= 125.0
+Online:M= 1000 CPUs_camera= 4 plate_recog= 563.942909241 dist_comp= 132.787942886 dist_obf= 546.673059464 enc_time= 679.610967636 total_time= 1243.70908737 sensitivity= 0 onl_comm= 125.0
+Online:RTT= 2.0905110836
+Offile:CPUs_camera= 4 Y_gen= 526.795864105 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 1584.10906792 ext_DB_size= 125.0
+Online:M= 1000 CPUs_camera= 4 plate_recog= 554.465055466 dist_comp= 112.297058105 dist_obf= 545.398950577 enc_time= 657.917022705 total_time= 1212.60309219 sensitivity= 0 onl_comm= 125.0
+Online:RTT= 2.06731200218
+Offile:CPUs_camera= 4 Y_gen= 527.163028717 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 11078.0789852 ext_DB_size= 1000.0
+Online:M= 1000 CPUs_camera= 4 plate_recog= 558.845043182 dist_comp= 555.025100708 dist_obf= 4094.01202202 enc_time= 4649.47795868 total_time= 5208.46700668 sensitivity= 1 onl_comm= 1000.0
+Online:RTT= 7.11173415184
+Offile:CPUs_camera= 4 Y_gen= 535.889863968 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 11073.084116 ext_DB_size= 1000.0
+Online:M= 1000 CPUs_camera= 4 plate_recog= 547.834873199 dist_comp= 547.086000443 dist_obf= 4084.4578743 enc_time= 4631.73508644 total_time= 5179.71897125 sensitivity= 1 onl_comm= 1000.0
+Online:RTT= 7.08913207054
+Offile:CPUs_camera= 4 Y_gen= 532.500982285 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 10901.6480446 ext_DB_size= 1000.0
+Online:M= 1000 CPUs_camera= 4 plate_recog= 549.036026001 dist_comp= 550.950050354 dist_obf= 4087.7931118 enc_time= 4639.09697533 total_time= 5188.37404251 sensitivity= 1 onl_comm= 1000.0
+Online:RTT= 7.09713506699
+Offile:CPUs_camera= 4 Y_gen= 526.401996613 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 32942.2900677 ext_DB_size= 3500.0
+Online:M= 1000 CPUs_camera= 4 plate_recog= 547.68204689 dist_comp= 1894.71411705 dist_obf= 15762.6700401 enc_time= 17657.7110291 total_time= 18205.5251598 sensitivity= 2 onl_comm= 3500.0
+Online:RTT= 23.1500971317
+Offile:CPUs_camera= 4 Y_gen= 535.357952118 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 33040.2870178 ext_DB_size= 3500.0
+Online:M= 1000 CPUs_camera= 4 plate_recog= 549.983024597 dist_comp= 1869.05813217 dist_obf= 14615.3190136 enc_time= 16484.6498966 total_time= 17034.8169804 sensitivity= 2 onl_comm= 3500.0
+Online:RTT= 21.8732888699
+Offile:CPUs_camera= 4 Y_gen= 527.607917786 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 32868.2799339 ext_DB_size= 3500.0
+Online:M= 1000 CPUs_camera= 4 plate_recog= 548.845052719 dist_comp= 1866.7011261 dist_obf= 14525.0480175 enc_time= 16392.0009136 total_time= 16941.0889149 sensitivity= 2 onl_comm= 3500.0
+Online:RTT= 21.7893140316
+Offile:CPUs_camera= 4 Y_gen= 525.96116066 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 3121.54006958 ext_DB_size= 250.0
+Online:M= 2000 CPUs_camera= 4 plate_recog= 551.638841629 dist_comp= 185.105800629 dist_obf= 1040.90690613 enc_time= 1226.18412971 total_time= 1777.97293663 sensitivity= 0 onl_comm= 250.0
+Online:RTT= 2.75938081741
+Offile:CPUs_camera= 4 Y_gen= 528.106927872 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 3145.87187767 ext_DB_size= 250.0
+Online:M= 2000 CPUs_camera= 4 plate_recog= 555.358171463 dist_comp= 167.339801788 dist_obf= 1044.58522797 enc_time= 1212.08810806 total_time= 1767.59314537 sensitivity= 0 onl_comm= 250.0
+Online:RTT= 2.76334905624
+Offile:CPUs_camera= 4 Y_gen= 530.382871628 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 3178.79009247 ext_DB_size= 250.0
+Online:M= 2000 CPUs_camera= 4 plate_recog= 557.276010513 dist_comp= 170.669794083 dist_obf= 1053.86304855 enc_time= 1224.71117973 total_time= 1782.12618828 sensitivity= 0 onl_comm= 250.0
+Online:RTT= 2.7753880024
+Offile:CPUs_camera= 4 Y_gen= 532.461166382 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 21866.0049438 ext_DB_size= 2000.0
+Online:M= 2000 CPUs_camera= 4 plate_recog= 548.816919327 dist_comp= 1090.736866 dist_obf= 8215.79122543 enc_time= 9306.72287941 total_time= 9855.69190979 sensitivity= 1 onl_comm= 2000.0
+Online:RTT= 12.9474489689
+Offile:CPUs_camera= 4 Y_gen= 529.86907959 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 21791.1400795 ext_DB_size= 2000.0
+Online:M= 2000 CPUs_camera= 4 plate_recog= 542.606115341 dist_comp= 1088.95301819 dist_obf= 8454.73384857 enc_time= 9543.87903214 total_time= 10086.6391659 sensitivity= 1 onl_comm= 2000.0
+Online:RTT= 13.1668879986
+Offile:CPUs_camera= 4 Y_gen= 519.858121872 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 21846.3931084 ext_DB_size= 2000.0
+Online:M= 2000 CPUs_camera= 4 plate_recog= 548.444032669 dist_comp= 1091.04585648 dist_obf= 8416.06712341 enc_time= 9507.36308098 total_time= 10056.1270714 sensitivity= 1 onl_comm= 2000.0
+Online:RTT= 13.1930029392
+Offile:CPUs_camera= 4 Y_gen= 538.534879684 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 66425.0130653 ext_DB_size= 7000.0
+Online:M= 2000 CPUs_camera= 4 plate_recog= 569.105148315 dist_comp= 3630.55896759 dist_obf= 36397.9039192 enc_time= 40028.6550522 total_time= 40597.962141 sensitivity= 2 onl_comm= 7000.0
+Online:RTT= 49.8279461861
+Offile:CPUs_camera= 4 Y_gen= 562.290906906 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 65566.0009384 ext_DB_size= 7000.0
+Online:M= 2000 CPUs_camera= 4 plate_recog= 554.76307869 dist_comp= 3609.28297043 dist_obf= 37120.7389832 enc_time= 40730.2470207 total_time= 41285.1810455 sensitivity= 2 onl_comm= 7000.0
+Online:RTT= 50.5843889713
+Offile:CPUs_camera= 4 Y_gen= 536.790132523 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 66244.2491055 ext_DB_size= 7000.0
+Online:M= 2000 CPUs_camera= 4 plate_recog= 550.01115799 dist_comp= 3610.17107964 dist_obf= 38453.4420967 enc_time= 42063.8120174 total_time= 42613.9800549 sensitivity= 2 onl_comm= 7000.0
+Online:RTT= 51.8922681808
+Offile:CPUs_camera= 4 Y_gen= 537.175893784 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 4706.79402351 ext_DB_size= 375.0
+Online:M= 3000 CPUs_camera= 4 plate_recog= 552.497148514 dist_comp= 230.91006279 dist_obf= 1553.38096619 enc_time= 1784.4748497 total_time= 2337.12100983 sensitivity= 0 onl_comm= 375.0
+Online:RTT= 3.47646713257
+Offile:CPUs_camera= 4 Y_gen= 539.307117462 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 4660.3808403 ext_DB_size= 375.0
+Online:M= 3000 CPUs_camera= 4 plate_recog= 549.01099205 dist_comp= 236.63020134 dist_obf= 1557.16300011 enc_time= 1794.00110245 total_time= 2343.33705902 sensitivity= 0 onl_comm= 375.0
+Online:RTT= 3.46653103828
+Offile:CPUs_camera= 4 Y_gen= 530.559062958 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 4684.19504166 ext_DB_size= 375.0
+Online:M= 3000 CPUs_camera= 4 plate_recog= 554.991006851 dist_comp= 230.503797531 dist_obf= 1572.33715057 enc_time= 1803.10106277 total_time= 2358.42394829 sensitivity= 0 onl_comm= 375.0
+Online:RTT= 3.51916503906
+Offile:CPUs_camera= 4 Y_gen= 528.376817703 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 33369.5669174 ext_DB_size= 3000.0
+Online:M= 3000 CPUs_camera= 4 plate_recog= 558.808088303 dist_comp= 1604.37297821 dist_obf= 13684.8909855 enc_time= 15289.4918919 total_time= 15848.443985 sensitivity= 1 onl_comm= 3000.0
+Online:RTT= 20.234495163
+Offile:CPUs_camera= 4 Y_gen= 523.431062698 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 32731.7650318 ext_DB_size= 3000.0
+Online:M= 3000 CPUs_camera= 4 plate_recog= 543.214082718 dist_comp= 1601.91082954 dist_obf= 14705.8751583 enc_time= 16308.0410957 total_time= 16851.4361382 sensitivity= 1 onl_comm= 3000.0
+Online:RTT= 21.2981100082
+Offile:CPUs_camera= 4 Y_gen= 523.408889771 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 99533.3390236 ext_DB_size= 10500.0
+Offile:CPUs_camera= 4 Y_gen= 574.375867844 Y_size= 100.0 Offile:CPUs_camera= 1 ext_DB_gen= 98565.3600693 ext_DB_size= 10500.0
+Online:M= 3000 CPUs_camera= 4 plate_recog= 566.937923431 dist_comp= 5309.68093872 dist_obf= 58376.8911362 enc_time= 63686.8028641 total_time= 64253.8938522 sensitivity= 2 onl_comm= 10500.0
+Online:RTT= 77.4163320065
+Online:M= 3000 CPUs_camera= 4 plate_recog= 549.383163452 dist_comp= 5528.31697464 dist_obf= 64898.5431194 enc_time= 70427.4208546 total_time= 70977.036953 sensitivity= 2 onl_comm= 10500.0
+Online:RTT= 84.2110960484
+Online:M= 3000 CPUs_camera= 4 plate_recog= 560.752868652 dist_comp= 5699.17583466 dist_obf= 67501.7979145 enc_time= 73201.6561031 total_time= 73762.5589371 sensitivity= 2 onl_comm= 10500.0
+Online:RTT= 87.0722489357
